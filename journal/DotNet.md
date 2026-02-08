@@ -6,7 +6,7 @@
 
 ASP.NET Core supports several ways to build web applications. Conceptually, they fall into server-side rendering and client-side (SPA) models.
 
-- #### ASP.NET Core + SPA (React, Angular, Vue): 
+- #### ASP.NET Core + SPA (React, Angular, etc): 
     This is a typical layer separation of front- and backend  where Client SPA handles rendering and routing, and backend exposes an API.
 
 - #### MVC:
@@ -36,5 +36,47 @@ Now the class `MovieService` can be injected into class throughout the app:
     }
 ```
 
-# APS.NET HTTP pipeline: Middleware & Filters
+# ASP.NET HTTP pipeline: Middleware & Filters
 
+In ASP.NET, middleware is code that executes at the HTTP request pipeline level. Each middleware component can inspect or modify the incoming HTTP request, perform some task, and then optionally pass control to the next component in the pipeline via a [request delegates](#request-delegates). Middleware is framework-agnostic and does not depend on MVC concepts such as controllers, pages, or models.
+
+Filters, on the other hand, execute within the ASP.NET MVC / Razor Pages framework, surrounding the execution of a controller action or page handler. They are concerned with endpoint-level behavior, such as authorization, model validation and exception handling.
+
+#### Request Delegates
+Request flow down the pipeline and encapsulated within the [RequestContext](). Each middle ware is registered via the following delegates:
+
+- `Use` : for middleware that sits somewhere in the pipeline and invokes the next middleware with `next.Invoke()`.
+- `Map` : allows to diverge from the pipeline path.
+- `Run` : are for terminal middleware of the pipeline, and no other middleware is executed after it.
+
+After the execution of the last component of the pipeline responses flow in the other direction, meaning the code following the `next.Invoke()` call is executed in
+the opposite order of the middleware declaration as shown below:
+###### ASP.NET request pipeline:
+```
+---> Request
+        MiddlewareA            
+            MiddlewareB
+                Controller  // filters
+            MiddlewareB
+        MiddlewareA
+<--- Response       
+```
+
+# Razor Pages - closer look
+
+Razor Pages trade feature-centric discoverability for locality of behavior. This means the project structure is organized based on pages rendered on the browser, thus, instead of having the traditional feature based controllers it spreads such a controller between pages that use the specific HTTP operations. This design is better suited for SSR and form heavy UI. In addition, this architecture couples more tightly the view and the controller layers making it difficult to introduce many changes to either layer.
+
+The documentation refers to a **page** as the conceptual rendered page consisting of :
+- `PageModel` : The request handler (essentially a mini, paged-scoped controller) explicitly defines the allowed HTTP verbs.
+- Razor page : includes the html code and links to the PageModel via `@model`. At first I wanted to classify this component strictly as view component however it is also responsible for declaring and registering an endpoint. A page model without a razor page will lead to 404.a 
+
+
+Example - url path matching:
+```
+└── Pages
+    ├── Index.cshtml            // "/"
+    ├── Home.cshtml             // "/home"
+    └── Profile
+        ├─ Index.cshtml         // "/profile"
+        └─ Settings.cshtml      // "/profile/settings"
+```
