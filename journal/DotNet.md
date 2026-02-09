@@ -64,11 +64,15 @@ the opposite order of the middleware declaration as shown below:
 
 # Razor Pages - closer look
 
-Razor Pages trade feature-centric discoverability for locality of behavior. This means the project structure is organized based on pages rendered on the browser, thus, instead of having the traditional feature based controllers it spreads such a controller between pages that use the specific HTTP operations. This design is better suited for SSR and form heavy UI. In addition, this architecture couples more tightly the view and the controller layers making it difficult to introduce many changes to either layer.
+Moving away from SPA application the server-client control flow changes. Instead of the browser making async requests to fetch data than reads the response with the necessary data running some JS and rendering the page. In SSR application, like Razor Pages, the DOM is rendered on the server meaning that once a request is made the server loads the data, attaches it to the html page, renders it and sends it as a response to the browser whose only responsibility is displaying the page. To this extent 1 request* = 1 URL = 1 render.
+
+###### *excluding the request made to fetch the subsequent page resources such as the css style sheet.
+
+With this philosophy, Razor Pages trade feature-centric discoverability for locality of behavior. This means the project structure is organized based on pages rendered on the browser, thus, instead of having the traditional feature based controllers it spreads the controller between pages that use the specific HTTP operations. While this approach is better for SSR one obvious limitation that arises the the tighter coupling between view and controller logic as a result from this page centric structure means that changes affecting an entire feature require changes across many files (e.g., adding logging to every user profile edit.)
 
 The documentation refers to a **page** as the conceptual rendered page consisting of :
 - `PageModel` : The request handler (essentially a mini, paged-scoped controller) explicitly defines the allowed HTTP verbs.
-- Razor page : includes the html code and links to the PageModel via `@model`. At first I wanted to classify this component strictly as view component however it is also responsible for declaring and registering an endpoint. A page model without a razor page will lead to 404.a 
+- Razor page : includes the html code and links to the PageModel via `@model`. At first I wanted to classify this component strictly as view component however it is also responsible for declaring and registering an endpoint. A page model without a razor page will lead to 404. In other words the razor page declares the intent. 
 
 
 Example - url path matching:
@@ -80,3 +84,97 @@ Example - url path matching:
         ├─ Index.cshtml         // "/profile"
         └─ Settings.cshtml      // "/profile/settings"
 ```
+
+
+### Tag helpers
+
+# Persistence: EF Core & DbContext
+
+In the .NET ecosystem, EF Core provides support for ORM as well as managing database access, change tracking, and transactions through the `DbContext`.  
+
+DbContext provides an interface to the underlying Data base similar to JPA in Spring. However, unlike JPA a dbContext instance also represents a **Unit-of-Work**, meaning that each change to the db is stored in the dbContext and is persisted atomically with a call to `SaveChanges()`. Another difference is that SQL queries are generated via calling `LINQ` query operators exposed by the `DbSet` in the form of methods such as, `Where()`, `Find()`, `Add()`, which performed on the `DbSet`. Essentially, the `DbSet` is a proxy to the underlying db table that tracks all the actions performed and the entities queried (not the all the table rows).
+
+
+```C#
+public class AppDbContext : DbContext {
+    public DbSet<Profile> Profiles { get; set; } 
+}
+
+var db = new AppDbContext()
+var profile = db.Profiles.Find(0) // get profile with id == 0.
+```
+
+## Entities 
+
+To make a class into an entity it has to be either annotated explicitly or implicitly by initializing a `DbSet` for it with as in the preceding code.
+
+### Relationships
+
+Relationships are defined implicitly. Unlike spring that requires annotation like `@OneToOne` or `@oneToMany`, EF infers the relationship based on the properties:
+
+```C#
+public class Season {
+    public int Id{get;set;}
+    public ICollection<Episode> Episodes{get;set;}
+}
+```
+In the preceding code EF infers `Id` automatically as the primary key of Season as well as the one-to-many relationship between Season and Episode table. 
+`Episodes` here is called a navigation property as it is used to navigate between the tables.
+
+Per convention it is better to make such relationships explicit with **Fluent-API**:
+
+```C#
+public class SeasonContext: DbContext {
+    public DbSet<Season> seasons{get;set;}
+
+    protected override void onModelCreating(DbModelBuilder modelBuilder) {
+        modalBuilder.Entity<Season>()
+            .HasMany(s => s.episodes)   // defines relationship and navigation
+            .WithOne()                  // only defines navigation from season to episode.
+    }
+}
+```
+Alternatively, data labels can also be used to makes things more explicit but i prefer Fluent API as it is less to remember and works great with linter. 
+
+Using Fluent API we can define many configuration options such as cascading on delete:
+
+```C#
+public class SeasonContext: DbContext {
+    public DbSet<Season> seasons{get;set;}
+
+    protected override void onModelCreating(DbModelBuilder modelBuilder) {
+        modalBuilder.Entity<Season>()
+            .HasMany(s => s.episodes)  
+            .WithOne()
+            .WillCascadeOnDelete(true) // delete all episode on season delete.             
+    }
+}
+```
+
+It is important to note that unlike Hibernate EF, by default, does eager load to the child data. to enable lazy fetch one must add a table proxy support as a dependency and set the navigation property as virtual.
+
+### Polymorphism
+
+By default EF stores all derived types in a single table (table-per-hierarchy) and uses an additional (discriminator) column to distinguish between them and missing columns are filled with nulls. However, tables per type can be enabled using Fluent api for each type or once per base class:
+
+```C#
+public abstract class Media {/*..*/}
+public class Movie : Media {/*..*/}
+public class Season : Media {/*..*/}
+
+// per class declaration:
+modelBuilder.Entity<Season>().ToTable("Seasons");
+modelBuilder.Entity<Movie>().ToTable("Movies");
+
+// once per base:
+modelBuilder.Entity<Media>().UseTptMappingStrategy();
+
+// table per concrete class:
+modelBuilder.Entity<Media>().UseTpcMappingStrategy();
+
+```
+TPC strategy is better since it doesn't create a table for the base class and performs joins to obtain the data from the base class props. Instead it create a table for each concrete class and includes columns for all properties including of the base class.
+
+### Validation
+
+
