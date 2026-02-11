@@ -1,10 +1,21 @@
 ﻿@page
 @model IndexModel
+
 @{
     ViewData["Title"] = "Home page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="main-container">
+    <div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <span>Please choose a profile.</span>
+    </div>
+    <div class="profile-container">
+        @foreach(var profile in Model.Profiles)
+        {
+            <div class="profile">@profile.Name</div>
+        }
+        <div class="new-profile">
+            <a asp-page="/Profiles/Create" class="btn btn-outline-primary">Add new profile</a>
+        </div>
+    </div>
 </div>

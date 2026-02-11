@@ -68,7 +68,7 @@ Moving away from SPA application the server-client control flow changes. Instead
 
 ###### *excluding the request made to fetch the subsequent page resources such as the css style sheet.
 
-With this philosophy, Razor Pages trade feature-centric discoverability for locality of behavior. This means the project structure is organized based on pages rendered on the browser, thus, instead of having the traditional feature based controllers it spreads the controller between pages that use the specific HTTP operations. While this approach is better for SSR one obvious limitation that arises the the tighter coupling between view and controller logic as a result from this page centric structure means that changes affecting an entire feature require changes across many files (e.g., adding logging to every user profile edit.)
+With this philosophy, Razor Pages trade feature-centric discoverability for locality of behavior. This means the project structure is organized based on pages rendered on the browser, thus, instead of having the traditional feature based controllers, it spreads the controller between pages that use the specific HTTP operations. While this approach is better for SSR one obvious limitation that arises the the tighter coupling between view and controller logic as a result from this page centric structure means that changes affecting an entire feature require changes across many files (e.g., adding logging to every user profile edit.)
 
 The documentation refers to a **page** as the conceptual rendered page consisting of :
 - `PageModel` : The request handler (essentially a mini, paged-scoped controller) explicitly defines the allowed HTTP verbs.
@@ -96,13 +96,17 @@ DbContext provides an interface to the underlying Data base similar to JPA in Sp
 
 
 ```C#
-public class AppDbContext : DbContext {
+public class ProfileContext : DbContext {
     public DbSet<Profile> Profiles { get; set; } 
 }
 
-var db = new AppDbContext()
+var db = new ProfileContext()
 var profile = db.Profiles.Find(0) // get profile with id == 0.
 ```
+
+## DbContext injection
+
+To make a specific context available for DI, it is necessary to register it with `builder.Services.AddDbContext<ProfileContext>()`.
 
 ## Entities 
 
@@ -176,5 +180,20 @@ modelBuilder.Entity<Media>().UseTpcMappingStrategy();
 TPC strategy is better since it doesn't create a table for the base class and performs joins to obtain the data from the base class props. Instead it create a table for each concrete class and includes columns for all properties including of the base class.
 
 ### Validation
+
+### Migrations
+
+Migrations are essentially version control for db schema changes. To commit a change run the following command:
+
+```
+dotnet ef migrations add <CommitName>
+```
+
+After running the preceding command the Database file still doesn't exist this only creates the instructions for generating db tables. Next we want to apply those instruction to generate the tables:
+
+```
+dotnet ef database update
+```
+
 
 

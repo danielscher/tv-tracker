@@ -134,3 +134,18 @@ public class Movie {
 ```
 
 Notice that the constructor and initializer are both called it is important to know that constructors run first and initializers afterwards.
+
+### Immutability
+
+Unlike Java, Kotlin or C++ that implement immutability via keywords such as `final`, `val`, and `const` respectively. While possible to guarantee immutability using keywords it is primarily controller by access modifiers.
+
+```C#
+    public class Movie {
+        public int Id {get;private set;}
+        public string Title {get;set;}
+}
+```
+
+In the preceding code, the `Id` property cannot be modified externally, it is technically mutable from inside of the class. As nothing guards the the property from being modified by another function of the class.
+
+Using `readonly` modifier works just like const in C++ meaning it is assignable only at construction and no further writes are possible. However, this is typically avoided for ORM entities as this complicates ORM mapping from DB rows.
