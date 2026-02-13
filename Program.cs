@@ -12,10 +12,11 @@ var dbPath = Path.Combine(AppContext.BaseDirectory, "TvTracker.db");
 var sqliteSourceStr = $"Data Source={dbPath}";
 
 // inject contexts
-builder.Services.AddDbContext<ProfileContext>(options => options.UseSqlite(sqliteSourceStr));
+builder.Services.AddDbContext<TvTrackerContext>(options => options.UseSqlite(sqliteSourceStr));
 
 // inject services
 builder.Services.AddScoped<ProfileService>();
+builder.Services.AddScoped<UserMediaService>();
 
 // builder.Logging.AddConsole();
 // builder.Logging.SetMinimumLevel(LogLevel.Debug);

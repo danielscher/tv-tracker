@@ -7,23 +7,41 @@ namespace TvTracker.Models;
 
 /// <summary>
 /// Represents a relationship between a user and a concrete media,
-/// and holds user-specific meta data about the media.
+/// and holds user-specific rating and watch status.
 /// </summary>
 /// <param name="profile"> the associated user profile </param>
 /// <param name="type"> either a movie, series or a season</param>
 /// <param name="mediaId"> the id of the associated media </param>
 /// <param name="status"> user status regarding the media </param>
-public class UserMedia(in Profile profile, in MediaType type, in int mediaId, WatchStatus status = WatchStatus.None)
+public abstract class UserMedia(in Profile profile)
 {
     public int Id{get;private set;}
 
     public Profile UserProfile{get;private set;} = profile;
 
-    public MediaType MediaType{get;private set;} = type;
-
-    public int MediaId{get;private set;} = mediaId;
-
-    public WatchStatus Status{get;set;} = status;
+    public WatchStatus Status{get;private set;} = WatchStatus.None;
 
     public int? Rating{get;set;}
+
+    /// <summary>
+    /// the UTC time when the 
+    /// </summary>
+    public DateTime? WatchedAt{get;private set;} 
+
+    /// <summary>
+    /// Sets the timestamp of the watched time to the current UTC time.
+    /// </summary>
+    public void Watch()
+    {
+        Status = WatchStatus.Watched;
+        WatchedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Sets status to WantToWatch. Does not overwrite WatchedAt.
+    /// </summary>
+    public void WantToWatch()
+    {
+        Status = WatchStatus.WantToWatch;   
+    }
 }

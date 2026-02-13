@@ -8,7 +8,7 @@ using TvTracker.Data;
 
 namespace TvTracker.Migrations
 {
-    [DbContext(typeof(ProfileContext))]
+    [DbContext(typeof(TvTrackerContext))]
     partial class ProfileContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

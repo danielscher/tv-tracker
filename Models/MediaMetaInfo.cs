@@ -2,15 +2,13 @@
 namespace TvTracker.Models;
 
 /// <summary>
-/// Base class for media encapsulating meta data.
+/// Encapsulation of media meta info shared between different media types.
 /// </summary>
 /// <param name="title"> the name of the media</param>
 /// <param name="posterPath"> path to the image of the media </param>
 /// <param name="language"> the original language of the media </param>
-public abstract class Media(in string title, in string posterPath, in string language)
+public class MediaMetaInfo(in string title, in string posterPath, in string language)
 {
-    public int Id{get;private set;}
-
     public string Title{get;private set;} = title;
     public string Language{get;private set;} = language;
 

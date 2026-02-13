@@ -12,10 +12,15 @@
     <div class="profile-container">
         @foreach(var profile in Model.Profiles)
         {
-            <div class="profile">@profile.Name</div>
+                <form method="post" asp-page-handler="Select">
+                    <input type="hidden" name="profileId" value="@profile.Id" />
+                    <button type="submit" class="profile">@profile.Name</button>
+                </form>
         }
-        <div class="new-profile">
-            <a asp-page="/Profiles/Create" class="btn btn-outline-primary">Add new profile</a>
-        </div>
+        @if (Model.Profiles.Count < 4){
+            <div class="new-profile">
+                <a asp-page="/Profiles/Create" class="btn btn-outline-primary">New profile</a>
+            </div>
+        }
     </div>
 </div>

@@ -9,7 +9,7 @@ using TvTracker.Data;
 
 namespace TvTracker.Migrations
 {
-    [DbContext(typeof(ProfileContext))]
+    [DbContext(typeof(TvTrackerContext))]
     [Migration("20260211110206_InitialCreate")]
     partial class InitialCreate
     {

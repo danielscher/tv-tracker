@@ -11,14 +11,13 @@ public class IndexModel(ProfileService service) : PageModel
 
     public async Task OnGet()
     {
-        Profiles = await _service.GetAllProfiles();
+        Profiles = await _service.FetchAllProfiles();
         Page();
     }
 
-    public async Task OnPost(string name)
+    public async Task OnPostSelect(int profileId)
     {
-        var profile = await _service.CreateProfile(name);
-        Page();
+        _service.AuthorizeProfile(Response,profileId);
     }
 
 

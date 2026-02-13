@@ -1,15 +1,66 @@
 using Microsoft.EntityFrameworkCore;
 using TvTracker.Data;
+using TvTracker.Exception;
 using TvTracker.Models;
 
 namespace TvTracker.Services;
-public class ProfileService(ProfileContext context)
+public class ProfileService(TvTrackerContext context)
 {
-    private readonly ProfileContext _context = context;
+    private readonly TvTrackerContext _context = context;
 
-    public async Task<Profile> GetProfile(int profileId) => await _context.FetchProfile(profileId);
+     /// <summary>
+    /// Fetch a profile from the Database.
+    /// </summary>
+    /// <param name="profileId"> id of the profile to fetch </param>
+    /// <returns>Profile with the id specified </returns>
+    /// <exception cref="NotFoundException"></exception>
+    public async Task<Profile> FetchProfile(int profileId)
+    {
+        var profile = await _context.Profiles.FindAsync(profileId) ?? throw new NotFoundException($"Profile with id {profileId} not found");
+        return profile;
+    }
 
-    public async Task<ICollection<Profile>> GetAllProfiles() => await _context.FetchAllProfiles();
+    public async Task<ICollection<Profile>> FetchAllProfiles()
+    {
+        return await _context.Profiles.ToListAsync();
+    }
+
+    /// <summary>
+    /// persists profile.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns>Newly created profile </returns>
+    public async Task<Profile> CreateProfile(Profile profile)
+    {
+        _context.Profiles.Add(profile);
+        await _context.SaveChangesAsync();
+        return profile;
+    }
+
+    /// <summary>
+    /// Removes profile with the specified id.
+    /// </summary>
+    /// <param name="profileId"></param>
+    public async Task DeleteProfile(int profileId)
+    {
+        int pid = profileId;
+        await _context.Profiles.Where( p => p.Id == pid).ExecuteDeleteAsync();
+    }
+
+    /// <summary>
+    /// Performs an update on an existing profile
+    /// </summary>
+    /// <param name="profileId"> the id of the profile to update </param>
+    /// <param name="newName"></param>
+    /// <returns>updated profile</returns>
+    public async Task<Profile> UpdateProfile(int profileId,string newName)
+    {
+        var profile = await FetchProfile(profileId);
+        profile.Name = newName;
+        await _context.SaveChangesAsync();
+        return profile;
+    }
+
 
     /// <summary>
     /// Creates new profile and persists it in the Database
@@ -25,10 +76,37 @@ public class ProfileService(ProfileContext context)
         }
         var normalizedName = name.Trim();
         var profile = new Profile(normalizedName);
-        Console.WriteLine("new Profile Created");
-        return await _context.CreateProfile(profile);
+        _context.Profiles.Add(profile);
+        await _context.SaveChangesAsync();
+        return profile;
     }
 
-    public async Task DeleteProfile(int profileId) => await _context.DeleteProfile(profileId);
+
+    /// <summary>
+    /// Appends selected profile id to an http only cookie.
+    /// </summary>
+    public void AuthorizeProfile(HttpResponse response, int profileId)
+    {
+        response.Cookies.Append(
+            "SelectedProfileId",
+            profileId.ToString(),
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,
+                Expires = DateTimeOffset.UtcNow.AddDays(7) // expires in 7 days.
+            }
+        );
+    }
+
+    /// <summary>
+    /// Removes Selected profile id from cookie.
+    /// </summary>
+    /// <param name="response"></param>
+    public void UnauthorizeProfile(HttpResponse response)
+    {
+        response.Cookies.Delete("SelectedProfileId");
+    }
+
 
 }
