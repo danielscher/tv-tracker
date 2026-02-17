@@ -3,11 +3,24 @@ namespace TvTracker.Models;
 /// <summary>
 /// Represents an actor.
 /// </summary>
-/// <param name="fullName"> name of the actor </param>
-/// <param name="posterPath"> path to the actors image </param>
-public class Actor(string fullName, in string posterPath)
+public class Actor
 {
-    public int Id{get;private set;}
-    public string FullName{get;set;} = fullName.Trim();
-    public string posterPath{get;set;} = posterPath;
+    public int Id{get;}
+    public string FullName{get;}
+    public string? PosterPath{get;set;}
+
+    public Actor(string fullName, string posterPath)
+    {
+        if (string.IsNullOrEmpty(fullName)) throw new ArgumentNullException(nameof(fullName));
+        FullName = fullName.Trim();
+        PosterPath = posterPath;
+    }
+
+    // EF materialization.
+    private Actor(int id, string fullName, string posterPath)
+    {
+        Id = id;
+        FullName = fullName;
+        PosterPath = posterPath;
+    }
 }

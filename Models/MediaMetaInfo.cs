@@ -4,34 +4,28 @@ namespace TvTracker.Models;
 /// <summary>
 /// Encapsulation of media meta info shared between different media types.
 /// </summary>
-/// <param name="title"> the name of the media</param>
-/// <param name="posterPath"> path to the image of the media </param>
-/// <param name="language"> the original language of the media </param>
-public class MediaMetaInfo(in string title, in string posterPath, in string language)
+public class MediaMetaInfo
 {
-    public string Title{get;private set;} = title;
-    public string Language{get;private set;} = language;
-
-    public string PosterPath{get;set;} = posterPath;
+    public string Title{get;}
+    public string Language{get;}
+    public string? PosterPath{get;set;}
 
     /// <summary>
     /// Genres associated with the media type e.g., comedy, romance, etc.
     /// </summary>
     public HashSet<Enums.Genre> Genres{get;private set;} = [];
 
-    /// <summary>
-    /// Actors played in the series
-    /// </summary>
-    private readonly ICollection<CastMember> _cast = [];
+    public void AddGenre(Enums.Genre genre) => Genres.Add(genre);
 
-    /// <summary>
-    /// Cast ordered by the appearance in credits.
-    /// </summary>
-    public IEnumerable<CastMember> Cast => _cast.OrderBy(member => member.CreditIndex);
-
-    public void AddCastMember(CastMember member)
+    public MediaMetaInfo(string title, string posterPath, string language)
     {
-        _cast.Add(member);
+        ArgumentException.ThrowIfNullOrEmpty(title);
+        Title = title;
+
+        PosterPath = posterPath;
+
+        ArgumentException.ThrowIfNullOrEmpty(language);
+        Language = language;
     }
 }
 

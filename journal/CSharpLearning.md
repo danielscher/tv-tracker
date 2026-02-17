@@ -137,15 +137,22 @@ Notice that the constructor and initializer are both called it is important to k
 
 ### Immutability
 
-Unlike Java, Kotlin or C++ that implement immutability via keywords such as `final`, `val`, and `const` respectively. While possible to guarantee immutability using keywords it is primarily controller by access modifiers.
+Unlike Java, Kotlin or C++ that implement immutability via keywords such as `final`, `val`, and `const` respectively. While possible to guarantee immutability using keywords it is primarily controller by access modifiers or the lack thereof.
 
 ```C#
     public class Movie {
-        public int Id {get;private set;}
-        public string Title {get;set;}
+        public readonly int _id;                // readonly - only used for fields, assignable only at declaration or inside the constructor.
+        public int Id { get; private set;}      // private setter - can only be set inside of the class.
+        public string Title { get; }            // no setter - can only be set in constructor. 
+        public int ReleaseYear { get; init; }   // init - can only be assigned in constructor or initializer. 
+        public int Rating { get; set; }         // mutable
 }
 ```
 
-In the preceding code, the `Id` property cannot be modified externally, it is technically mutable from inside of the class. As nothing guards the the property from being modified by another function of the class.
+if the entire object must be immutable it can be declared as a `record` which makes all properties immutable by default.
 
-Using `readonly` modifier works just like const in C++ meaning it is assignable only at construction and no further writes are possible. However, this is typically avoided for ORM entities as this complicates ORM mapping from DB rows.
+`const` is also available but it used for primitive types whose value that must be known at compile time therefore cannot be assigned through a runtime object.
+
+### EF consideration
+
+Immutability and Initialization are a cause of a lot of conflicts with EF. The philosophy of immutability in this intersection is not quite well defined, as imperatively the code specifies that a certain property is not nullable however during materialization it might not be loaded 

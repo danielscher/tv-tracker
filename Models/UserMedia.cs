@@ -13,11 +13,11 @@ namespace TvTracker.Models;
 /// <param name="type"> either a movie, series or a season</param>
 /// <param name="mediaId"> the id of the associated media </param>
 /// <param name="status"> user status regarding the media </param>
-public abstract class UserMedia(in Profile profile)
+public abstract class UserMedia
 {
-    public int Id{get;private set;}
+    public int Id {get;}
 
-    public Profile UserProfile{get;private set;} = profile;
+    public Profile Profile {get;}
 
     public WatchStatus Status{get;private set;} = WatchStatus.None;
 
@@ -43,5 +43,15 @@ public abstract class UserMedia(in Profile profile)
     public void WantToWatch()
     {
         Status = WatchStatus.WantToWatch;   
+    }
+
+    protected UserMedia(Profile profile)
+    {
+        Profile = profile;
+    }
+
+    protected UserMedia()
+    {
+        Profile = null!;
     }
 }

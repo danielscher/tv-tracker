@@ -1,9 +1,13 @@
-using TvTracker.Models.Enums;
-
 namespace TvTracker.Models;
 
-public class UserMovie(Profile profile, Movie movie) : UserMedia(profile)
+public class UserMovie : UserMedia
 {
-    public Movie Movie = movie;
-    
+    public  Movie Movie {get;}
+
+    public UserMovie(Profile profile, Movie movie): base(profile) => Movie = movie;
+
+    private UserMovie() : base()
+    {
+        Movie = null!;
+    }    
 }

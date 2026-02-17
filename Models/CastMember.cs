@@ -2,16 +2,51 @@ namespace TvTracker.Models;
 
 /// <summary>
 /// Represents a role or a character played by an actor in some media.
+/// Essentially a join table between an Actor and a Media type.
 /// </summary>
-/// <param name="name">name of the role / character in the media</param>
-/// <param name="creditIndex"> place in the list of credits from 0 to N with 0 being the first </param>
-public class CastMember(in string name, in int creditIndex, in Actor actor)
+public class CastMember
 {
-    public int Id{get;private set;}
+    public int Id{get;}
 
-    public string CharacterName { get; private set; } = name;
+    /// <summary>
+    /// FK of a mediaType.
+    /// </summary>
+    public int MediaId {get;}
 
-    public int CreditIndex{get;private set;} = creditIndex;
+    /// <summary>
+    /// Name of the character played in the media.
+    /// </summary>
+    public string CharacterName { get; }
 
-    public Actor Actor{get;set;} = actor;
+    /// <summary>
+    /// Used to order cast in credits.
+    /// </summary>
+    public int CreditIndex{get;}
+
+    /// <summary>
+    /// The actor that plays the character in the media.
+    /// </summary>
+    public Actor Actor{get;}
+
+    public CastMember(string characterName, int creditIndex, Actor actor)
+    {
+        if (string.IsNullOrEmpty(characterName)) throw new ArgumentNullException(nameof(characterName));
+        CharacterName = characterName.Trim();
+
+        CreditIndex = creditIndex;
+
+        ArgumentNullException.ThrowIfNull(actor);
+        Actor = actor;
+    }
+
+    // EF materialization.
+    private CastMember(int id, int mediaId, string characterName, int creditIndex)
+    {
+        Id = id;
+        MediaId = mediaId;
+        CharacterName = characterName;
+        CreditIndex = creditIndex;
+        Actor = null!; // suppress warning.
+    }
+
 }

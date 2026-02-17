@@ -1,7 +1,18 @@
 using TvTracker.Models.Enums;
 
 namespace TvTracker.Models;
-public class UserSeason(Profile profile, Season season) : UserMedia(profile)
+public class UserSeason : UserMedia
 {   
-    public Season Season {get;set;} = season;
+    public Season Season {get;}
+
+    public UserSeason(Profile profile, Season season) : base(profile)
+    {
+        Season = season;
+    }
+
+    // EF materialization.
+    private UserSeason() : base()
+    {
+        Season = null!;
+    }
 }

@@ -22,7 +22,7 @@ public class UserMediaService(TvTrackerContext context)
     /// <exception cref="NotFoundException"></exception>
     public async Task<UserMedia> GetUserMedia(int profileId, int mediaId) 
     {
-        var um =  await _context.UserMedia.Where(u => u.UserProfile.Id == profileId)
+        var um =  await _context.UserMedia.Where(u => u.Profile.Id == profileId)
         .Where(u=> u.Id == mediaId)
         .SingleOrDefaultAsync(); 
 
@@ -94,7 +94,7 @@ public class UserMediaService(TvTrackerContext context)
     public async Task<ICollection<UserMediaView>> GetRecentlyWatchedMedia(int profileId)
     {
         var media = await _context.UserMedia
-        .Where(u => u.UserProfile.Id == profileId && u.Status == WatchStatus.Watched)
+        .Where(u => u.Profile.Id == profileId && u.Status == WatchStatus.Watched)
         .OrderBy(u => u.WatchedAt)
         .ToListAsync();
 
@@ -110,7 +110,7 @@ public class UserMediaService(TvTrackerContext context)
     /// <returns></returns>
     private Task<List<T>> GetUserMediaList<T>(int profileId ) where T: UserMedia
     {
-        return _context.UserMedia.OfType<T>().Where(u => u.UserProfile.Id == profileId).ToListAsync();
+        return _context.UserMedia.OfType<T>().Where(u => u.Profile.Id == profileId).ToListAsync();
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ public class UserMediaService(TvTrackerContext context)
     /// <returns></returns>
     private Task<List<T>> GetUserMediaList<T>(int profileId, WatchStatus status) where T: UserMedia
     {
-        return _context.UserMedia.OfType<T>().Where(u => u.UserProfile.Id == profileId).Where(u => u.Status == status).ToListAsync();
+        return _context.UserMedia.OfType<T>().Where(u => u.Profile.Id == profileId).Where(u => u.Status == status).ToListAsync();
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public class UserMediaService(TvTrackerContext context)
     private async Task<T> GetUserMedia<T>(int profileId, int userMediaId) where T: UserMedia
     {
         var userMedia =  await _context.UserMedia.OfType<T>()
-        .Where(u => u.UserProfile.Id == profileId)
+        .Where(u => u.Profile.Id == profileId)
         .Where(u=> u.Id == userMediaId)
         .SingleOrDefaultAsync(); 
         return userMedia ?? throw new NotFoundException($"The media {userMediaId} for profile {profileId} not found.");
@@ -150,7 +150,7 @@ public class UserMediaService(TvTrackerContext context)
     private Task<List<T>> GetRecentlyWatchUserMedia<T>(int profileId) where T: UserMedia
     {
         return _context.UserMedia.OfType<T>()
-            .Where(u => u.UserProfile.Id == profileId)
+            .Where(u => u.Profile.Id == profileId)
             .Where(u => u.Status == Models.Enums.WatchStatus.Watched)
             .OrderBy(u => u.WatchedAt)
             .ToListAsync();
@@ -169,16 +169,16 @@ public class UserMediaService(TvTrackerContext context)
 
         string title = u switch
         {
-            UserMovie m => m.Movie.MetaInfo.Title,
-            UserSeries s => s.Series.MetaInfo.Title,
+            UserMovie m => m.Movie.MediaInfo.Title,
+            UserSeries s => s.Series.MediaInfo.Title,
             UserSeason _ => throw new InvalidDataException(errorMsg),
             _ => throw new NotImplementedException()
         };
 
-        string poster = u switch
+        string? poster = u switch
         {
-            UserMovie m => m.Movie.MetaInfo.PosterPath,
-            UserSeries s => s.Series.MetaInfo.PosterPath,
+            UserMovie m => m.Movie.MediaInfo.PosterPath,
+            UserSeries s => s.Series.MediaInfo.PosterPath,
             UserSeason _ => throw new InvalidDataException(errorMsg),
             _ => throw new NotImplementedException()
         };

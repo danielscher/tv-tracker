@@ -134,7 +134,7 @@ public class SeasonContext: DbContext {
     protected override void onModelCreating(DbModelBuilder modelBuilder) {
         modalBuilder.Entity<Season>()
             .HasMany(s => s.episodes)   // defines relationship and navigation
-            .WithOne()                  // only defines navigation from season to episode.
+            .WithOne()                  // wrong. omitted if one directional navigation is not required.
     }
 }
 ```
@@ -149,7 +149,6 @@ public class SeasonContext: DbContext {
     protected override void onModelCreating(DbModelBuilder modelBuilder) {
         modalBuilder.Entity<Season>()
             .HasMany(s => s.episodes)  
-            .WithOne()
             .WillCascadeOnDelete(true) // delete all episode on season delete.             
     }
 }
@@ -159,7 +158,7 @@ It is important to note that unlike Hibernate EF, by default, does eager load to
 
 ### Polymorphism
 
-By default EF stores all derived types in a single table (table-per-hierarchy) and uses an additional (discriminator) column to distinguish between them and missing columns are filled with nulls. However, tables per type can be enabled using Fluent api for each type or once per base class:
+By default EF stores all derived types in a single table (table-per-hierarchy) and uses an additional (discriminator) column to distinguish between them and missing columns are filled with nulls. However, tables per type (TPT) can be enabled using Fluent api for each type or once per base class:
 
 ```C#
 public abstract class Media {/*..*/}
@@ -177,7 +176,17 @@ modelBuilder.Entity<Media>().UseTptMappingStrategy();
 modelBuilder.Entity<Media>().UseTpcMappingStrategy();
 
 ```
-TPC strategy is better since it doesn't create a table for the base class and performs joins to obtain the data from the base class props. Instead it create a table for each concrete class and includes columns for all properties including of the base class.
+TPC strategy is another approach that doesn't create a table for the base class and performs joins to obtain the data from the base class props. Instead it creates a table for each concrete class and includes columns for all properties including of the base class.
+
+##### Interfaces 
+EF core does not support mapping of interface types meaning it is not possible to have a navigation property of an interface type, for example:
+
+```C#
+public class Car {
+    public int Id {get;set;}
+    public IEngine Engine {get;set;} // ef core error on type.
+}
+```
 
 ### Validation
 

@@ -1,17 +1,27 @@
 namespace TvTracker.Models;
 
-public class Season(in int seasonsNumber, in int episodes, in int episodeLength)
+public class Season(int seasonNumber, int episodes, int episodeLength)
 {
-    public int SeasonNumber{get;private set;} = seasonsNumber;
+    public int Id {get;}
+
+    /// <summary>
+    /// FK for EF.
+    /// </summary>
+    public int SeriesId {get;}
+
+    /// <summary>
+    /// I.e., (Season) 1, 2, 3, ...etc.
+    /// </summary>
+    public int SeasonNumber{get;} = seasonNumber;
 
     /// <summary>
     /// Number of episodes in this season.
     /// </summary>
-    public int Episodes{get;private set;} = episodes;
+    public int Episodes{get;} = episodes;
 
     /// <summary>
     /// Length of each episode in minutes.
     /// Assumes the same length for each episode as typically this doesn't very much. 
     /// </summary>
-    public int EpisodeLength{get;private set;} = episodeLength;
+    public int EpisodeLength{get;} = episodeLength;
 }
