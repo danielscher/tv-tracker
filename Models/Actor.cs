@@ -9,7 +9,7 @@ public class Actor
     public string FullName{get;}
     public string? PosterPath{get;set;}
 
-    public Actor(string fullName, string posterPath)
+    public Actor(string fullName, string? posterPath)
     {
         if (string.IsNullOrEmpty(fullName)) throw new ArgumentNullException(nameof(fullName));
         FullName = fullName.Trim();

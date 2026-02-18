@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using TvTracker.Data;
 using TvTracker.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -12,7 +13,9 @@ var dbPath = Path.Combine(AppContext.BaseDirectory, "TvTracker.db");
 var sqliteSourceStr = $"Data Source={dbPath}";
 
 // inject contexts
-builder.Services.AddDbContext<TvTrackerContext>(options => options.UseSqlite(sqliteSourceStr));
+builder.Services.AddDbContext<TvTrackerContext>(options => 
+    options
+    .UseSqlite(sqliteSourceStr));
 
 // inject services
 builder.Services.AddScoped<ProfileService>();
@@ -40,5 +43,14 @@ app.UseAuthorization();
 app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
+
+using var scope = app.Services.CreateScope();
+var ctx = scope.ServiceProvider.GetRequiredService<TvTrackerContext>();
+
+ctx.Database.Migrate();
+if (!ctx.Profiles.Any())
+{
+    TvTrackerContext.SeedData(ctx);
+}
 
 app.Run();

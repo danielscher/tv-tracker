@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TvTracker.Data;
 
@@ -12,11 +11,9 @@ using TvTracker.Data;
 namespace TvTracker.Migrations
 {
     [DbContext(typeof(TvTrackerContext))]
-    [Migration("20260217155848_modelRefactor")]
-    partial class modelRefactor
+    partial class TvTrackerContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
@@ -72,28 +69,6 @@ namespace TvTracker.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("INTEGER");
-
-                    b.ComplexProperty(typeof(Dictionary<string, object>), "MediaInfo", "TvTracker.Models.Media.MediaInfo#MediaMetaInfo", b1 =>
-                        {
-                            b1.IsRequired();
-
-                            b1.PrimitiveCollection<string>("Genres")
-                                .IsRequired()
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Language")
-                                .IsRequired()
-                                .HasMaxLength(10)
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("PosterPath")
-                                .HasColumnType("TEXT");
-
-                            b1.Property<string>("Title")
-                                .IsRequired()
-                                .HasMaxLength(100)
-                                .HasColumnType("TEXT");
-                        });
 
                     b.HasKey("Id");
 
@@ -187,6 +162,28 @@ namespace TvTracker.Migrations
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("INTEGER");
 
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "MediaInfo", "TvTracker.Models.Movie.MediaInfo#MediaMetaInfo", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.PrimitiveCollection<string>("Genres")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Language")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("PosterPath")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Title")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("TEXT");
+                        });
+
                     b.ToTable("Movies", (string)null);
                 });
 
@@ -196,6 +193,28 @@ namespace TvTracker.Migrations
 
                     b.Property<int>("AirStatus")
                         .HasColumnType("INTEGER");
+
+                    b.ComplexProperty(typeof(Dictionary<string, object>), "MediaInfo", "TvTracker.Models.Series.MediaInfo#MediaMetaInfo", b1 =>
+                        {
+                            b1.IsRequired();
+
+                            b1.PrimitiveCollection<string>("Genres")
+                                .IsRequired()
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Language")
+                                .IsRequired()
+                                .HasMaxLength(10)
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("PosterPath")
+                                .HasColumnType("TEXT");
+
+                            b1.Property<string>("Title")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("TEXT");
+                        });
 
                     b.ToTable("Series", (string)null);
                 });

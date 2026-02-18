@@ -46,19 +46,23 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
         // UserMovie - Movie relation
         modelBuilder.Entity<UserMovie>(e =>
         {
-            e.HasOne(x => x.Movie);
+            e.HasOne(x => x.Movie).WithMany().IsRequired();
+
+            e.Navigation(x => x.Movie).AutoInclude();
         });
 
         // UserSeries - Series relation
         modelBuilder.Entity<UserSeries>(e =>
         {
-            e.HasOne(x => x.Series);
+            e.HasOne(x => x.Series).WithMany().IsRequired();
+            e.Navigation(x=>x.Series).AutoInclude();
         });
 
         // UserSeason - Season relation
         modelBuilder.Entity<UserSeason>(e =>
         {
-            e.HasOne(x => x.Season);
+            e.HasOne(x => x.Season).WithMany().IsRequired();
+            e.Navigation(x=>x.Season).AutoInclude();
         });
     } 
 
@@ -146,5 +150,34 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
     {
         builder.Property(x => x.Id);
         builder.Property(x => x.Name).HasMaxLength(20);
+    }
+
+    public static void SeedData(DbContext context)
+    {
+        // Profiles
+        var testProfile = new Profile("test");
+        context.Set<Profile>().Add(testProfile);
+
+        // Actors
+        var actor = new Actor("Robert Downey Jr.","posters/rdj.png");
+        context.Set<Actor>().Add(actor);
+
+        // Movies
+        var movieInfo = new MediaMetaInfo("Iron Man", "posters/ironman.png", "en");
+        var movie = new Movie(movieInfo, 126, 2008);
+        context.Set<Movie>().Add(movie);
+
+        // Cast
+        var cast = new CastMember("Tony Stark", 0, actor);
+        context.Set<CastMember>().Add(cast);
+        movie.AddCast(cast);
+
+        // UserMedia
+        var userMedia = new UserMovie(testProfile,movie) {Rating = 6};
+        userMedia.Watch();
+        context.Set<UserMovie>().Add(userMedia);
+
+
+        context.SaveChanges();
     }
 }

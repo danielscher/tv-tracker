@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TvTracker.Migrations
 {
     /// <inheritdoc />
-    public partial class modelRefactor : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -31,7 +31,11 @@ namespace TvTracker.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false),
                     Length = table.Column<int>(type: "INTEGER", nullable: false),
-                    ReleaseYear = table.Column<int>(type: "INTEGER", nullable: false)
+                    ReleaseYear = table.Column<int>(type: "INTEGER", nullable: false),
+                    MediaInfo_Genres = table.Column<string>(type: "TEXT", nullable: false),
+                    MediaInfo_Language = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    MediaInfo_PosterPath = table.Column<string>(type: "TEXT", nullable: true),
+                    MediaInfo_Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,11 +43,28 @@ namespace TvTracker.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Profiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Profiles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Series",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false),
-                    AirStatus = table.Column<int>(type: "INTEGER", nullable: false)
+                    AirStatus = table.Column<int>(type: "INTEGER", nullable: false),
+                    MediaInfo_Genres = table.Column<string>(type: "TEXT", nullable: false),
+                    MediaInfo_Language = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
+                    MediaInfo_PosterPath = table.Column<string>(type: "TEXT", nullable: true),
+                    MediaInfo_Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -188,6 +209,9 @@ namespace TvTracker.Migrations
 
             migrationBuilder.DropTable(
                 name: "Movies");
+
+            migrationBuilder.DropTable(
+                name: "Profiles");
 
             migrationBuilder.DropTable(
                 name: "Seasons");

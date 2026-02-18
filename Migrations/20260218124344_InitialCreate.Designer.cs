@@ -12,8 +12,8 @@ using TvTracker.Data;
 namespace TvTracker.Migrations
 {
     [DbContext(typeof(TvTrackerContext))]
-    [Migration("20260218090934_ComplexTypeOnDerived")]
-    partial class ComplexTypeOnDerived
+    [Migration("20260218124344_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -13,11 +13,15 @@ public class MediaMetaInfo
     /// <summary>
     /// Genres associated with the media type e.g., comedy, romance, etc.
     /// </summary>
-    public HashSet<Enums.Genre> Genres{get;private set;} = [];
+    public List<Enums.Genre> Genres{get;private set;} = [];
 
-    public void AddGenre(Enums.Genre genre) => Genres.Add(genre);
+    public void AddGenre(Enums.Genre genre)
+    {
+        if (!Genres.Contains(genre))
+            Genres.Add(genre);
+    }
 
-    public MediaMetaInfo(string title, string posterPath, string language)
+    public MediaMetaInfo(string title, string? posterPath, string language)
     {
         ArgumentException.ThrowIfNullOrEmpty(title);
         Title = title;
