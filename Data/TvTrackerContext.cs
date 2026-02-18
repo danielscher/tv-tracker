@@ -70,12 +70,8 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
             // flatten base type onto separate subclass tables.
             entity.UseTpcMappingStrategy();
 
-            // configure owned type props.
-            entity.ComplexProperty(x=> x.MediaInfo, m=> 
-            {
-                m.Property(x=>x.Title).HasMaxLength(100).IsRequired();
-                m.Property(x=>x.Language).HasMaxLength(10).IsRequired();
-            });
+            // owned types must be configured
+            // on tables of the derived classes
 
             // cast relation.
             entity.HasMany(x=>x.Cast)
@@ -84,21 +80,34 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
             .IsRequired();
         });
 
-        modelBuilder.Entity<Movie>()
-        .ToTable("Movies")
-        .Property(x=> x.Length);
+        modelBuilder.Entity<Movie>(e =>
+        {
+            e.ToTable("Movies");
+            e.Property(x=> x.Length);
+            e.Property(x=>x.ReleaseYear);
 
-        modelBuilder.Entity<Movie>()
-        .Property(x=>x.ReleaseYear);
+            e.ComplexProperty(x=> x.MediaInfo, m=> 
+            {
+                m.Property(x=>x.Title).HasMaxLength(100).IsRequired();
+                m.Property(x=>x.Language).HasMaxLength(10).IsRequired();
+            });
+        });
 
-        modelBuilder.Entity<Series>()
-        .ToTable("Series")
-        .HasMany(x=>x.Seasons)
-        .WithOne()
-        .HasForeignKey(x => x.SeriesId);
+        modelBuilder.Entity<Series>(e =>
+        {
+            e.ToTable("Series")
+                .HasMany(x=>x.Seasons)
+                .WithOne()
+                .HasForeignKey(x => x.SeriesId);
 
-        modelBuilder.Entity<Series>()
-        .Property(x=> x.AirStatus);
+            e.ComplexProperty(x=> x.MediaInfo, m=> 
+            {
+                m.Property(x=>x.Title).HasMaxLength(100).IsRequired();
+                m.Property(x=>x.Language).HasMaxLength(10).IsRequired();
+            });
+
+            e.Property(x=> x.AirStatus);
+        });
 
         modelBuilder.Entity<Season>(entity =>
         {
