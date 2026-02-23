@@ -1,0 +1,32 @@
+@using TvTracker.Models.View
+@Html.AntiForgeryToken()
+@model MediaControlsViewModel
+
+<div id="media-controls" class="media-controls" data-media-id="@Model.MediaId">
+    <div class="rating-wrapper">
+        <button id="rating-button" class="rating-button">
+            @(Model.Rating?.ToString() ?? "Rate")
+        </button>
+        <div id="rating-container" class="rating-container hidden">
+            <div class="arrow"></div>
+            @for (int i = 10; i >= 1; i--)
+            {
+                <input type="radio"
+                       name="rating"
+                       value="@i"
+                       id="star-@i"
+                       @(Model.Rating == i ? "checked" : "") />
+                <label for="star-@i"></label>
+            }
+        </div>
+    </div>
+
+    <button id="toggle-watch-later">
+        @(Model.Status.ToString() ?? "Watch Later")
+    </button>
+
+    <span>@Model.WatchDate</span>
+</div>
+
+
+

@@ -15,9 +15,10 @@ public class IndexModel(ProfileService service) : PageModel
         Page();
     }
 
-    public async Task OnPostSelect(int profileId)
+    public async Task<Microsoft.AspNetCore.Mvc.RedirectResult> OnPostSelect(int profileId)
     {
         _service.AuthorizeProfile(Response,profileId);
+        return Redirect("/Home");
     }
 
 

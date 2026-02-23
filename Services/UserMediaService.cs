@@ -11,27 +11,41 @@ namespace TvTracker.Services;
 public class UserMediaService(TvTrackerContext context)
 {
     private readonly TvTrackerContext _context = context;
+
+    public async Task<UserMedia> getUserMediaByIdAndProfileId(Guid id,int profileId)
+    {
+       return await _context.UserMedia
+       .Where(x=> x.Id == id && x.ProfileId == profileId)
+       .SingleAsync() ?? throw new NotFoundException($"UserMedia with id {id} for profile {profileId} not found.");
+    }
     
     /// <summary>
     /// Fetches the specified UserMedia.
     /// Useful if only UserMedia related properties are needed.
     /// </summary>
     /// <param name="profileId"> id of data owner </param>
-    /// <param name="mediaId"> id of desired UserMedia </param>
+    /// <param name="mediaId"> id of the underlying media </param>
     /// <returns></returns>
     /// <exception cref="NotFoundException"></exception>
-    public async Task<UserMedia> GetUserMedia(int profileId, int mediaId) 
+    public async Task<UserMedia?> GetUserMediaByProfileIdAndMediaIdOptional(int profileId, Guid mediaId) 
     {
-        var um =  await _context.UserMedia.Where(u => u.Profile.Id == profileId)
-        .Where(u=> u.Id == mediaId)
+        var um =  await _context.UserMedia
+        .Where(u => u.Profile.Id == profileId)
+        .Where(u=> u.MediaId == mediaId)
         .SingleOrDefaultAsync(); 
-
-        return um ?? throw new NotFoundException($"The media {mediaId} for profile {profileId} not found.");
+        return um;
     }
+
+    public async Task<UserMedia> GetUserMediaByProfileIdAndMediaId(int profileId, Guid mediaId)
+    {
+        return (await GetUserMediaByProfileIdAndMediaIdOptional(profileId,mediaId)) 
+        ?? throw new NotFoundException($"The media {mediaId} for profile {profileId} not found."); 
+    }
+
 
     public async Task RemoveAllUserMedia(int profileId)
     {
-       await _context.UserMedia.Where(u=>u.Id == profileId).ExecuteDeleteAsync();
+       await _context.UserMedia.Where(u=>u.Profile.Id == profileId).ExecuteDeleteAsync();
     }
 
     public async Task<UserMovie> CreateUserMovie(Profile profile, Movie movie)
@@ -58,17 +72,27 @@ public class UserMediaService(TvTrackerContext context)
         return us;
     }
 
-    public async Task RateUserMedia(int profileId, int userMediaId ,int rating)
+    public async Task<UserMedia> RateUserMedia(int profileId, Guid userMediaId ,int rating)
     {
-        var um = await GetUserMedia(profileId,userMediaId);
+        Console.WriteLine($"new rating: {rating}");
+        var um = await getUserMediaByIdAndProfileId(userMediaId,profileId);
         um.Rating = rating;
         await _context.SaveChangesAsync();
+        return um;
     }
 
 
-    public async Task UpdateWatchStatus<T>(
-        int profileId, 
-        int userMediaId, 
+    /// <summary>
+    /// Updates and persist UserMedia status.
+    /// </summary>
+    /// <typeparam name="T">derived type of UserMedia</typeparam>
+    /// <param name="profileId">id of owning profile</param>
+    /// <param name="userMediaId">id of the UserMedia</param>
+    /// <param name="status">the new status</param>
+    /// <returns>updated UserMedia</returns>
+    public async Task<T> UpdateWatchStatus<T>(
+        int profileId,
+        Guid userMediaId, 
         WatchStatus status) where T : UserMedia
     {
         var um = await GetUserMedia<T>(profileId, userMediaId);
@@ -80,27 +104,23 @@ public class UserMediaService(TvTrackerContext context)
             case WatchStatus.None : break;
         }
         await _context.SaveChangesAsync();
+        return um;
     }
 
-    public Task<List<UserMovie>> GetUserMovies(int profileId) => GetUserMediaList<UserMovie>(profileId);
-    public Task<List<UserSeries>> GetUserSeries(int profileId) => GetUserMediaList<UserSeries>(profileId);
-    public Task<List<UserSeason>> GetUserSeasons(int profileId) => GetUserMediaList<UserSeason>(profileId);
     public Task<List<UserMovie>> GetUserMovieWatchList(int profileId) => GetUserMediaList<UserMovie>(profileId,WatchStatus.WantToWatch);
+    public Task<List<UserMovie>> GetUserMovieAlreadyWatchedList(int profileId) => GetUserMediaList<UserMovie>(profileId,WatchStatus.Watched);
     public Task<List<UserSeries>> GetUserSeriesWatchList(int profileId) => GetUserMediaList<UserSeries>(profileId,WatchStatus.WantToWatch);
-    public Task<UserMovie> GetUserMovie(int profileId,int userMediaId) => GetUserMedia<UserMovie>(profileId,userMediaId);
-    public Task<UserSeries> GetUserSeries(int profileId,int userMediaId) => GetUserMedia<UserSeries>(profileId,userMediaId);
-    public Task<UserSeason> GetUserSeason(int profileId,int userMediaId) => GetUserMedia<UserSeason>(profileId,userMediaId);
+    public Task<List<UserSeries>> GetUserSeriesAlreadyWatchedList(int profileId) => GetUserMediaList<UserSeries>(profileId,WatchStatus.Watched);
 
-    public async Task<ICollection<UserMediaView>> GetRecentlyWatchedMedia(int profileId)
+    public async Task<ICollection<MediaView>> GetRecentlyWatchedMedia(int profileId)
     {
         var media = await _context.UserMedia
         .Where(u => u.Profile.Id == profileId && u.Status == WatchStatus.Watched)
         .OrderBy(u => u.WatchedAt)
         .ToListAsync();
 
-        return [.. media.Select(MapToView)];
+        return [.. media.Select(Flatten)];
     }
-
 
     /// <summary>
     /// Fetches the subclass of UserMedia Data of a certain profile. 
@@ -130,16 +150,16 @@ public class UserMediaService(TvTrackerContext context)
     /// </summary>
     /// <typeparam name="T">the desired subclass of UserMedia </typeparam>
     /// <param name="profileId">data owner id </param>
-    /// <param name="userMediaId"> the user media id </param>
+    /// <param name="userMediaId"> the UserMedia id </param>
     /// <returns></returns>
     /// <exception cref="NotFoundException"></exception>
-    private async Task<T> GetUserMedia<T>(int profileId, int userMediaId) where T: UserMedia
+    private async Task<T> GetUserMedia<T>(int profileId, Guid userMediaId) where T: UserMedia
     {
         var userMedia =  await _context.UserMedia.OfType<T>()
         .Where(u => u.Profile.Id == profileId)
         .Where(u=> u.Id == userMediaId)
         .SingleOrDefaultAsync(); 
-        return userMedia ?? throw new NotFoundException($"The media {userMediaId} for profile {profileId} not found.");
+        return userMedia ?? throw new NotFoundException($"The userMedia {userMediaId} for profile {profileId} not found.");
     }
 
     /// <summary>
@@ -163,7 +183,7 @@ public class UserMediaService(TvTrackerContext context)
     /// <returns></returns>
     /// <exception cref="InvalidDataException"></exception>
     /// <exception cref="NotImplementedException"></exception>
-    private UserMediaView MapToView(UserMedia u)
+    private MediaView Flatten(UserMedia u)
         {
         const string errorMsg = "UserSeason is not supported here.";
 
@@ -191,7 +211,7 @@ public class UserMediaService(TvTrackerContext context)
             _ => throw new NotImplementedException()
         };
 
-        return new UserMediaView(u.Id, type, title, poster, u.Rating, u.WatchedAt);
+        return new MediaView(u.Id, type, title, poster);
     }
 
 }

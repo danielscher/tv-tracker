@@ -1,3 +1,5 @@
+using TvTracker.Models.DTOs;
+
 namespace TvTracker.Models;
 public class Movie : Media
 {
@@ -20,6 +22,11 @@ public class Movie : Media
     {
         Length = length;
         ReleaseYear = releaseYear;
+    }
+
+    public override MediaView ToResponse()
+    {
+        return new MediaView(Id, Enums.MediaType.Movie, MediaInfo.Title,MediaInfo.PosterPath);
     }
 
 }

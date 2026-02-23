@@ -102,7 +102,6 @@ public class ProfileService(TvTrackerContext context)
     /// <summary>
     /// Removes Selected profile id from cookie.
     /// </summary>
-    /// <param name="response"></param>
     public void UnauthorizeProfile(HttpResponse response)
     {
         response.Cookies.Delete("SelectedProfileId");

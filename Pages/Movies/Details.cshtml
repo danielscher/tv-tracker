@@ -1,0 +1,42 @@
+@page "{id:guid}"
+@model Movies.DetailsModel
+@section Styles {
+    <link rel="stylesheet" href="~/css/Home/index.css" asp-append-version="true" />
+}
+<div class="main-content">
+
+    <div class="media-banner">
+        <img src="@Url.Content($"~/{@Model.Movie?.MediaInfo.PosterPath}")" alt="" />
+        <div class="media-title">
+            <h2>@Model.Movie?.MediaInfo.Title</h2>
+        </div>
+        @if(Model.MediaControls != null && Model.Movie != null) {
+           <partial name="_MediaControls"
+            model="Model.MediaControls" />
+        }
+    </div>
+
+    <div class="cast-container">
+        <h3>Cast</h3>
+
+        <div class="cast-cards-container">  
+            @foreach(var member in Model.Cast) {
+                <div class="cast-card">
+                    <img src="@Url.Content($"~/{member.Actor.PosterPath}")"/>
+                    <span>@member.CharacterName</span>
+                    <span>@member.Actor.FullName</span>
+                </div>
+            }
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script type="module">
+        import {initMediaControls} from '/js/initMediaControls.js';
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        initMediaControls(token);
+    </script>
+}

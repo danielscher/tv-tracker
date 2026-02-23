@@ -1,0 +1,44 @@
+@page "{id:guid}"
+@using TvTracker.Models.View
+@model Shows.DetailsModel
+@Html.AntiForgeryToken()
+@section Styles {
+    <link rel="stylesheet" href="~/css/Home/index.css" asp-append-version="true" />
+}
+<div class="main-content">
+    <div class="media-banner">
+        <img src="@Url.Content($"~/{Model.Series?.MediaInfo.PosterPath}")" alt="" />
+        <div class="media-title">
+            <h2>@Model.Series?.MediaInfo.Title</h2>
+        </div>
+
+        @if(Model.MediaControls != null && Model.Series != null) {
+           <partial name="_MediaControls"
+            model="Model.MediaControls" />
+        }
+    </div>
+
+    <div class="cast-container">
+        <h3>Cast</h3>
+
+        <div class="cast-cards-container">  
+            @foreach(var member in Model.Series?.Cast) {
+                <div class="cast-card">
+                    <img src="@Url.Content($"~/{member.Actor.PosterPath}")"/>
+                    <span class="actor-name">@member.Actor.FullName</span>
+                    <span class="character-name">@member.CharacterName</span>
+                </div>
+            }
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <script type="module">
+        import {initMediaControls} from '/js/initMediaControls.js';
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+        initMediaControls(token);
+    </script>
+}

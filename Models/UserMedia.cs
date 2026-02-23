@@ -1,6 +1,7 @@
 
 
 
+using TvTracker.Models.DTOs;
 using TvTracker.Models.Enums;
 
 namespace TvTracker.Models;
@@ -15,9 +16,12 @@ namespace TvTracker.Models;
 /// <param name="status"> user status regarding the media </param>
 public abstract class UserMedia
 {
-    public int Id {get;}
+    public Guid Id {get;}
 
+    public int ProfileId {get;}
     public Profile Profile {get;}
+
+    public Guid MediaId {get;protected set;}
 
     public WatchStatus Status{get;private set;} = WatchStatus.None;
 
@@ -38,20 +42,29 @@ public abstract class UserMedia
     }
 
     /// <summary>
-    /// Sets status to WantToWatch. Does not overwrite WatchedAt.
+    /// Toggles status between wantToWatch To None if not already watched.
+    /// otherwise does nothing.
     /// </summary>
     public void WantToWatch()
     {
-        Status = WatchStatus.WantToWatch;   
+        if (Status == WatchStatus.Watched) {return;}
+        Status = Status == WatchStatus.WantToWatch ? WatchStatus.None : WatchStatus.WantToWatch;   
     }
 
-    protected UserMedia(Profile profile)
+    protected UserMedia(Profile profile, Guid mediaId)
     {
         Profile = profile;
+        ProfileId = profile.Id;
+        MediaId = mediaId;
     }
 
     protected UserMedia()
     {
         Profile = null!;
+    }
+
+    public UserMediaInfo Flatten()
+    {
+        return new UserMediaInfo(Id,Rating,Status,WatchedAt);
     }
 }

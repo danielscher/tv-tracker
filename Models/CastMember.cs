@@ -11,7 +11,7 @@ public class CastMember
     /// <summary>
     /// FK of a mediaType.
     /// </summary>
-    public int MediaId {get;}
+    public Guid MediaId {get;}
 
     /// <summary>
     /// Name of the character played in the media.
@@ -40,7 +40,7 @@ public class CastMember
     }
 
     // EF materialization.
-    private CastMember(int id, int mediaId, string characterName, int creditIndex)
+    private CastMember(int id, Guid mediaId, string characterName, int creditIndex)
     {
         Id = id;
         MediaId = mediaId;

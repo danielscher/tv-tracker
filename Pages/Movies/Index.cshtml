@@ -1,0 +1,74 @@
+@page
+@model Movies.MoviesModel
+@Html.AntiForgeryToken()
+@section Styles {
+    <link rel="stylesheet" href="~/css/Home/index.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<div class="main-container">
+
+    <div>
+        <input name="searchQuery" type="text" id="searchBox">
+    </div>
+
+    <ul class="search-container"  id="search-results"></ul>
+
+    <div class="user-media-container" id="user-media-content">
+        @if(Model.WatchList.Count != 0) { 
+            <div class="recently-watched-container">
+
+                <h3>Watch List</h3>
+
+                <div class="card-container">
+                    @foreach(var um in Model.WatchList) 
+                    {
+                        // TODO: class is not being set on anchor.
+                        <a asp-page="/Movies/Details" asp-route-id="@um.Id">
+                            <div class="media-card">
+                                @if(@um.Movie.MediaInfo.PosterPath != null) {
+                                    <img src="@Url.Content($"~/{@um.Movie.MediaInfo.PosterPath}")" alt="@um.Movie.MediaInfo.Title" />
+                                }
+                                <span class="media-rating">
+                                    @um.Rating
+                                </span>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+
+        @if(Model.AlreadyWatch.Count != 0) {
+            <div class="recently-watched-container">
+
+                <h3>Recently Watched</h3>
+
+                <div class="card-container">
+                    @foreach(var um in Model.AlreadyWatch) 
+                    {
+                        <a asp-page="/Movies/Details" asp-route-id="@um.Movie.Id">
+                            <div class="media-card">
+                                    @if(um.Movie.MediaInfo.PosterPath != null) {
+                                        <img src="@Url.Content($"~/{@um.Movie.MediaInfo.PosterPath}")" alt="@um.Movie.MediaInfo.Title" />
+                                    }
+                                    <span class="media-rating">
+                                        @um.Rating
+                                    </span>
+                            </div>
+                        </a>
+
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script type="module">
+    import { searchMediaOnInput } from '/js/search.js';
+    searchMediaOnInput("searchBox", "search-results", "?handler=Search","Movies/Details","user-media-content");
+</script>

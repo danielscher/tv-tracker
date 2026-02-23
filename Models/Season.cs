@@ -2,12 +2,12 @@ namespace TvTracker.Models;
 
 public class Season(int seasonNumber, int episodes, int episodeLength)
 {
-    public int Id {get;}
+    public Guid Id {get;}
 
     /// <summary>
     /// FK for EF.
     /// </summary>
-    public int SeriesId {get;}
+    public Guid SeriesId {get;}
 
     /// <summary>
     /// I.e., (Season) 1, 2, 3, ...etc.

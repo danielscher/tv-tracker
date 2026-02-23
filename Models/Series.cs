@@ -1,3 +1,4 @@
+using TvTracker.Models.DTOs;
 using TvTracker.Models.Enums;
 
 namespace TvTracker.Models;
@@ -22,5 +23,23 @@ public class Series : Media
     private Series(AirStatus airStatus) : base()
     {
         AirStatus = airStatus;
+    }
+
+    public void AddSeason(Season season)
+    {
+        _seasons.Add(season);
+    }
+
+    public void AddSeasonRange(ICollection<Season> seasons)
+    {
+        foreach (var s in seasons)
+        {
+            AddSeason(s);
+        }
+    }
+
+    public override MediaView ToResponse()
+    {
+        return new MediaView(Id, MediaType.Series, MediaInfo.Title, MediaInfo.PosterPath);
     }
 }

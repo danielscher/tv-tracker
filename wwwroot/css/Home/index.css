@@ -1,0 +1,155 @@
+.media-card {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 130px;
+    height: 180px;
+    overflow: hidden;
+}
+
+.media-card img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.media-card .media-rating {
+    position: absolute;
+    top: 0;
+    right: 0;
+    aspect-ratio: 1/1;
+    width: 25px;
+    height: 25px;
+    font-size: 1.3rem;
+    color: black;
+    background-color: rgb(255, 238, 0);
+    border-radius: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px 5px 0 0;
+}
+
+.media-card-link {
+    display: inline-block;
+}
+
+.cast-cards-container {
+    display: flex;
+    flex-direction: row;
+    gap: 0 10px;
+}
+
+.cast-card {
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    text-align: center;
+}
+
+.cast-card img {
+    width: 100%;
+    object-fit: cover;
+    height: 150px;
+}
+
+.cast-card span {
+    text-overflow: ellipsis;
+    white-space:nowrap;
+    overflow: hidden;
+}
+
+
+
+.search-container {
+    padding: unset;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+.media-banner {
+    display: grid;
+    grid-template-areas: 
+        "poster title"
+        "poster controls";
+    grid-template-columns: auto 1fr;
+    gap: 0 2%;
+}
+
+.media-title {
+    grid-area: title;
+    display: flex;
+    align-items: end;
+}
+
+.media-banner img {
+    grid-area: poster;
+    width: 15vw;
+}
+
+.media-controls {
+    grid-area: controls;
+    display: inline-block;
+}
+
+.rating-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.rating-button {
+}
+
+
+.rating-container {
+  display: unset;
+  display: flex;
+  flex-direction: row-reverse;
+  position: absolute;    
+  background-color: gray;
+  height: 30px;
+    align-items: center;
+    margin-top: 11px;
+    padding: 0 5px;
+}
+
+.rating-container .arrow {
+    position: absolute;
+    left: 14px;
+    top: -10px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 10px solid gray;
+}
+
+.rating-container.hidden {
+    display: none;
+}
+
+.rating-container input {
+  display: none;
+}
+
+.rating-container label {
+  float: right;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+.rating-container label:before {
+  content: '\2605';
+  font-size: 30px;
+}
+
+.rating-container input:checked ~ label,
+.rating-container label:hover,
+.rating-container label:hover ~ label {
+  color: #6f00ff;
+}

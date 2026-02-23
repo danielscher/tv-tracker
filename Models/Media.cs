@@ -1,7 +1,9 @@
+using TvTracker.Models.DTOs;
+
 namespace TvTracker.Models;
 public abstract class Media
 {
-    public int Id {get;}
+    public Guid Id {get;}
     
     /// <summary>
     /// Holds general info regarding the media.
@@ -28,6 +30,25 @@ public abstract class Media
         MediaInfo = null!; // warning suppression.
     }
 
-    public void AddCast(CastMember castMember) => _cast.Add(castMember);
+    public void AddCast(CastMember castMember)
+    {
+        if (!_cast.Contains(castMember))
+        {
+            _cast.Add(castMember);
+        }
+    }
+
+    public void AddCastRange(ICollection<CastMember> members)
+    {
+        foreach (var member in members)
+        {
+            AddCast(member);
+        }
+    }
+    
+    /// <summary>
+    /// Returns a flattened out version for UI.
+    /// </summary>
+    public abstract MediaView ToResponse();
 
 }

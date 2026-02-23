@@ -1,16 +1,21 @@
-namespace TvTracker.Pages;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TvTracker.Models;
 using TvTracker.Services;
 using TvTracker.Utils;
 
-public class HomeModel(UserMediaService userMediaService): PageModel
+namespace TvTracker.Pages.Home;
+
+public class HomeModel: PageModel
 {
-    private readonly UserMediaService _service = userMediaService;
+    private readonly UserMediaService _service;
 
-    public List<UserSeries> UserSeries = [];
-    public List<UserMovie> UserMovies = [];
+    public List<UserSeries> UserSeries {get; private set;} = [];
+    public List<UserMovie> UserMovies {get; private set;}= [];
 
+    public HomeModel(UserMediaService service)
+    {
+        _service = service;
+    }
 
     public async Task OnGet()
     {
@@ -18,5 +23,4 @@ public class HomeModel(UserMediaService userMediaService): PageModel
         UserMovies = await _service.GetUserMovieWatchList(profileId);
         UserSeries = await _service.GetUserSeriesWatchList(profileId);
     }
-
 }

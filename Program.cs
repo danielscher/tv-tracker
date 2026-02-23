@@ -20,9 +20,11 @@ builder.Services.AddDbContext<TvTrackerContext>(options =>
 // inject services
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<UserMediaService>();
+builder.Services.AddScoped(typeof(MediaService<>));
 
 // builder.Logging.AddConsole();
 // builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
 
 var app = builder.Build();
 
@@ -44,13 +46,14 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
+/*  Initialize DB with seed data.  */
 using var scope = app.Services.CreateScope();
 var ctx = scope.ServiceProvider.GetRequiredService<TvTrackerContext>();
-
 ctx.Database.Migrate();
 if (!ctx.Profiles.Any())
 {
     TvTrackerContext.SeedData(ctx);
 }
+/**/
 
 app.Run();
