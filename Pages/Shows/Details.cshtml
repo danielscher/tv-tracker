@@ -21,7 +21,7 @@
     <div class="cast-container">
         <h3>Cast</h3>
 
-        <div class="cast-cards-container">  
+        <div class="cards-container">  
             @foreach(var member in Model.Series?.Cast) {
                 <div class="cast-card">
                     <img src="@Url.Content($"~/{member.Actor.PosterPath}")"/>
@@ -29,6 +29,21 @@
                     <span class="character-name">@member.CharacterName</span>
                 </div>
             }
+        </div>
+
+    </div>
+
+    <div class="seasons-container">
+        <h3>Seasons</h3>
+        <div class ="cards-container">
+        @foreach(var userSeason in Model.UserSeries?.UserSeasons) {
+            <div class="season-card">
+                <div class="placeholder-poster"></div>
+                <span>@userSeason.Rating</span>
+                <span>Season @userSeason.Season.SeasonNumber</span>
+                <span class="episode-num">@userSeason.Season.Episodes episodes</span>
+            </div>
+        }
         </div>
 
     </div>

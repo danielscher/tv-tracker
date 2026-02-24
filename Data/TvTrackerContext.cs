@@ -55,6 +55,9 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
         {
             e.HasOne(x => x.Series).WithMany().IsRequired();
             e.Navigation(x=>x.Series).AutoInclude();
+            
+            e.HasMany(x => x.UserSeasons).WithOne();
+            e.Navigation(x=> x.UserSeasons).AutoInclude();
         });
 
         // UserSeason - Season relation

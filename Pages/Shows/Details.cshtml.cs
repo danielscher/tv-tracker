@@ -20,6 +20,8 @@ public class DetailsModel: PageModel
 
     public UserMediaInfo? UserMediaInfo{get; private set;}
 
+    public UserSeries? UserSeries {get; private set;}
+
     public MediaControlsViewModel? MediaControls {get; set;}
 
 
@@ -36,6 +38,7 @@ public class DetailsModel: PageModel
         Series = await _seriesService.GetMedia(id);
         var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
         UserMediaInfo = (await _userMediaService.GetUserMediaByProfileIdAndMediaIdOptional(profileId,id))?.Flatten() ?? null;
+        UserSeries = (UserSeries?)await _userMediaService.GetUserMediaByProfileIdAndMediaId(profileId,id);
 
 
         if (Series == null)
