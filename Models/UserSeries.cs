@@ -10,7 +10,7 @@ public class UserSeries : UserMedia
     public ICollection<UserSeason> UserSeasons {get;} = [];
 
 
-    public UserSeries(Profile profile, Series series) : base(profile,series.Id)
+    public UserSeries(Profile profile, Series series) : base(profile,series.Id,series.TmdbId)
     {
         Series = series;
         foreach (var season in Series.Seasons)

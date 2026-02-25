@@ -6,7 +6,7 @@ public class UserSeason : UserMedia
 {   
     public Season Season {get;}
 
-    public UserSeason(Profile profile, Season season) : base(profile,season.Id)
+    public UserSeason(Profile profile, Season season) : base(profile,season.Id,season.TmdbId)
     {
         Season = season;
     }

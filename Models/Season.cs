@@ -4,6 +4,8 @@ public class Season(int seasonNumber, int episodes, int episodeLength)
 {
     public Guid Id {get;}
 
+    public int TmdbId {get;}
+
     /// <summary>
     /// FK for EF.
     /// </summary>

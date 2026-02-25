@@ -1,4 +1,4 @@
-@page "{id:guid}"
+@page "{tmdbId:int}"
 @model Movies.DetailsModel
 @section Styles {
     <link rel="stylesheet" href="~/css/Home/index.css" asp-append-version="true" />
@@ -6,11 +6,11 @@
 <div class="main-content">
 
     <div class="media-banner">
-        <img src="@Url.Content($"~/{@Model.Movie?.MediaInfo.PosterPath}")" alt="" />
+        <img src=@Model.MovieView?.PosterPath alt="" />
         <div class="media-title">
-            <h2>@Model.Movie?.MediaInfo.Title</h2>
+            <h2>@Model.MovieView?.Title</h2>
         </div>
-        @if(Model.MediaControls != null && Model.Movie != null) {
+        @if(Model.MediaControls != null && Model.MovieView != null) {
            <partial name="_MediaControls"
             model="Model.MediaControls" />
         }

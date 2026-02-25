@@ -1,7 +1,6 @@
 export function searchMediaOnInput(inputId, resultContainerId, handlerUrl, redirectUrl, hiddableContainerId ){
     // antiforgery token.
     const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-
     // dom elements
     const searchBox = document.getElementById(inputId);
     const resultsContainer = document.getElementById(resultContainerId);
@@ -13,6 +12,8 @@ export function searchMediaOnInput(inputId, resultContainerId, handlerUrl, redir
 
         clearTimeout(timeout);
         let query = event.target.value;
+        console.log(query);
+
         timeout = setTimeout(async () => {
 
             const response = await fetch(handlerUrl, {
@@ -24,9 +25,10 @@ export function searchMediaOnInput(inputId, resultContainerId, handlerUrl, redir
                 body: JSON.stringify(query)
             });
             
+            
 
             const data = await response.json();
-
+            console.log(data);
             // toggle page contents to display search results.
             if (hiddenContent){
                 if (data.length > 0) {
@@ -39,18 +41,29 @@ export function searchMediaOnInput(inputId, resultContainerId, handlerUrl, redir
             resultsContainer.innerHTML = "";
 
             data.forEach(item => {
-                const img = document.createElement("img")
-                img.src = item.mediaInfo.posterPath;
-
-                const li = document.createElement("li");
-                li.className = "media-card";
-                li.appendChild(img);
-
+                
+                // redirect on click 
                 const anchor = document.createElement("a")
                 anchor.className = "media-card-link";
-                anchor.href = `${redirectUrl}/${item.id}`
-                anchor.appendChild(li)
+                anchor.href = `${redirectUrl}/${item.TmdbId}`
+                 
+                // media card
+                const li = document.createElement("li");
+                li.className = "media-card";
 
+                // set image or image alternative if missing
+                if (item.PosterPath) {
+                    const img = document.createElement("img");
+                    img.src = `https://image.tmdb.org/t/p/w500/${item.PosterPath}`;
+                    li.appendChild(img);
+                } else {
+                    const placeholder = document.createElement("div");
+                    placeholder.className = "placeholder-poster";
+                    placeholder.textContent = item.Title;
+                    li.appendChild(placeholder);
+                }
+
+                anchor.appendChild(li)
                 resultsContainer.appendChild(anchor);
             });
 

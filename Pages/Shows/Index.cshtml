@@ -31,8 +31,8 @@
                         {   
                            <a asp-page="/Shows/Details" asp-route-id="@um.MediaId">  
                                 <div class="media-card">
-                                    @if(@um.Series.MediaInfo.PosterPath != null) {
-                                        <img src="@Url.Content($"~/{@um.Series.MediaInfo.PosterPath}")" alt="@um.Series.MediaInfo.Title" />
+                                    @if(@um.MediaPosterPath != null) {
+                                        <img src="@Url.Content($"~/{@um.MediaPosterPath}")" alt="@um.MediaTitle" />
                                     }
                                     <span class="media-rating">
                                         @um.Rating
@@ -54,8 +54,9 @@
                         {
                            <a asp-page="/Shows/Details" asp-route-id="@um.MediaId">  
                                 <div class="media-card">
-                                    @if(@um.Series.MediaInfo.PosterPath != null) {
-                                        <img src="@Url.Content($"~/{@um.Series.MediaInfo.PosterPath}")" alt="@um.Series.MediaInfo.Title" />
+                                    @if(@um.MediaPosterPath != null) {
+                                        <img src="@Url.Content($"~/{@um.MediaPosterPath}")" alt="@um.MediaTitle" />
+
                                     }
                                     <span class="media-rating">
                                         @um.Rating

@@ -39,6 +39,7 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
                 entity.UseTphMappingStrategy(); // tph by default.
                 entity.HasOne(x => x.Profile);
                 entity.HasIndex(um => new { um.ProfileId, um.MediaId }).IsUnique();
+                entity.Property(x=>x.TmdbId).IsRequired();
             }
         );
 
@@ -46,7 +47,6 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
         modelBuilder.Entity<UserMovie>(e =>
         {
             e.HasOne(x => x.Movie).WithMany().IsRequired();
-
             e.Navigation(x => x.Movie).AutoInclude();
         });
 
@@ -84,6 +84,7 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
             .WithOne()
             .HasForeignKey(x=> x.MediaId)
             .IsRequired();
+            entity.Property(x=> x.TmdbId).IsRequired();
         });
 
         modelBuilder.Entity<Movie>(e =>
@@ -124,6 +125,7 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
         {
             entity.ToTable("Seasons");
             entity.Property(x => x.Id);
+            entity.Property(x => x.TmdbId).IsRequired();
             entity.Property(x => x.SeriesId);
             entity.Property(x => x.SeasonNumber).IsRequired();
             entity.Property(x => x.Episodes).IsRequired();
@@ -171,11 +173,11 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
 
         // Movies
         var movieInfo = new MediaMetaInfo("Iron Man", "posters/ironman.png", "en");
-        var movie = new Movie(movieInfo, 126, 2008);
+        var movie = new Movie(1726,movieInfo, 126, 2008);
         context.Set<Movie>().Add(movie);
 
         var movieInfo2 = new MediaMetaInfo("Iron Man 2", "posters/ironman.png", "en");
-        var movie2 = new Movie(movieInfo2, 124, 2010);
+        var movie2 = new Movie(10138,movieInfo2, 124, 2010);
         context.Set<Movie>().Add(movie2);
 
         context.SaveChanges();
@@ -200,7 +202,7 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
 
         // Series
         var seriesInfo = new MediaMetaInfo("Friends","posters/friends.png", "en");
-        var series = new Series(seriesInfo,Models.Enums.AirStatus.Finished);
+        var series = new Series(1668,seriesInfo,Models.Enums.AirStatus.Finished);
         var season1 = new Season(1,24,22);
         var season2 = new Season(2,24,22);
         var season3 = new Season(3,25,22);

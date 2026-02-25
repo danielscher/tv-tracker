@@ -49,7 +49,7 @@ public class DetailsModel: PageModel
         // setup partial view model.
         MediaControls = new()
         {
-            MediaId = Series.Id,
+            TmdbId = -1,
             Status = UserMediaInfo?.Status ?? WatchStatus.None,
             Rating = UserMediaInfo?.Rating,
             WatchDate = UserMediaInfo?.WatchDate

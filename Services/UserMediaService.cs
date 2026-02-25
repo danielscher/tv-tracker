@@ -42,6 +42,21 @@ public class UserMediaService(TvTrackerContext context)
         ?? throw new NotFoundException($"The media {mediaId} for profile {profileId} not found."); 
     }
 
+    public async Task<UserMedia?> GetUserMediaByProfileIdAndTmdbIdOptional(int profileId, int tmdbId) 
+    {
+        var um =  await _context.UserMedia
+        .Where(u => u.Profile.Id == profileId)
+        .Where(u=> u.TmdbId == tmdbId)
+        .SingleOrDefaultAsync(); 
+        return um;
+    }
+
+    public async Task<UserMedia> GetUserMediaByProfileIdAndTmdbId(int profileId, int tmdbId) 
+    {
+        var um =  await GetUserMediaByProfileIdAndTmdbIdOptional(profileId,tmdbId);
+        return um ?? throw new NotFoundException($"The media with tmdbId:{tmdbId} for profile {profileId} not found");
+    }
+
 
     public async Task RemoveAllUserMedia(int profileId)
     {
@@ -112,16 +127,6 @@ public class UserMediaService(TvTrackerContext context)
     public Task<List<UserSeries>> GetUserSeriesWatchList(int profileId) => GetUserMediaList<UserSeries>(profileId,WatchStatus.WantToWatch);
     public Task<List<UserSeries>> GetUserSeriesAlreadyWatchedList(int profileId) => GetUserMediaList<UserSeries>(profileId,WatchStatus.Watched);
 
-    public async Task<ICollection<MediaView>> GetRecentlyWatchedMedia(int profileId)
-    {
-        var media = await _context.UserMedia
-        .Where(u => u.Profile.Id == profileId && u.Status == WatchStatus.Watched)
-        .OrderBy(u => u.WatchedAt)
-        .ToListAsync();
-
-        return [.. media.Select(Flatten)];
-    }
-
     /// <summary>
     /// Fetches the subclass of UserMedia Data of a certain profile. 
     /// </summary>
@@ -183,7 +188,7 @@ public class UserMediaService(TvTrackerContext context)
     /// <returns></returns>
     /// <exception cref="InvalidDataException"></exception>
     /// <exception cref="NotImplementedException"></exception>
-    private MediaView Flatten(UserMedia u)
+    public MediaView ToView(UserMedia u)
         {
         const string errorMsg = "UserSeason is not supported here.";
 
@@ -211,7 +216,7 @@ public class UserMediaService(TvTrackerContext context)
             _ => throw new NotImplementedException()
         };
 
-        return new MediaView(u.Id, type, title, poster);
+        return new MediaView(u.MediaId, type, title, poster, u.Rating, u.Status);
     }
 
 }

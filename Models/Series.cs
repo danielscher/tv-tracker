@@ -14,7 +14,7 @@ public class Series : Media
 
     public IEnumerable<Season> Seasons => _seasons;
 
-    public Series(MediaMetaInfo mediaInfo, AirStatus airStatus) : base(mediaInfo)
+    public Series(int tmdbId, MediaMetaInfo mediaInfo, AirStatus airStatus) : base(tmdbId,mediaInfo)
     {
         AirStatus = airStatus;
     }
@@ -40,6 +40,6 @@ public class Series : Media
 
     public override MediaView ToResponse()
     {
-        return new MediaView(Id, MediaType.Series, MediaInfo.Title, MediaInfo.PosterPath);
+        return new MediaView(Id, MediaType.Series, MediaInfo.Title, MediaInfo.PosterPath,null,null);
     }
 }

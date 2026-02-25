@@ -36,11 +36,10 @@ public class MediaService<T> where T: Media
         .ToListAsync();
     }
 
-    public async Task<List<CastMember>> Experimental(Guid movieId)
+    public async Task<T> PersistMedia(T media)
     {
-            var cast = await _context.Cast.Where(x=> x.MediaId == movieId).ToListAsync();
-            Console.WriteLine(cast.Count);
-            return cast ?? throw new NotFoundException("cast was not found.");
+        await _dbSet.AddAsync(media);
+        await _context.SaveChangesAsync();
+        return media;
     }
-
 }

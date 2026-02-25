@@ -2,16 +2,16 @@
  * Initializes the functionality of MediaControls components.
  */
 export function initMediaControls(antiForgeryToken) {
-    const mediaId = document.getElementById("media-controls").dataset.mediaId;
-    initRateButtons(mediaId,antiForgeryToken);
-    initWatchLaterButton(mediaId,antiForgeryToken);
+    const tmdbId = document.getElementById("media-controls").dataset.tmdbId;
+    initRateButtons(tmdbId,antiForgeryToken);
+    initWatchLaterButton(tmdbId,antiForgeryToken);
 }
 
 /**
  * Rate button toggle visibility of the rating inputs.
  * Rate inputs send a POST request to update rating.
  */
-function initRateButtons(mediaId,token) {
+function initRateButtons(tmdbId,token) {
      // Toggle visibility of rating inputs.
     const RatingButton = document.getElementById("rating-button");
     const rateContainer = document.getElementById("rating-container");
@@ -37,7 +37,7 @@ function initRateButtons(mediaId,token) {
             const formData = new URLSearchParams();
             formData.append("rating", rating);
 
-            const response = await fetch(`?handler=Rate&mediaId=${mediaId}`, {
+            const response = await fetch(`?handler=Rate&tmdbId=${tmdbId}`, {
                 method: "POST",
                 headers: {
                     "RequestVerificationToken": token
@@ -57,12 +57,12 @@ function initRateButtons(mediaId,token) {
 /**
  * WatchLater button sends a post request to toggle the WatchStatus of media.
  */
-function initWatchLaterButton(mediaId, token) {
+function initWatchLaterButton(tmdbId, token) {
 
     const watchButton = document.getElementById("toggle-watch-later");
 
     watchButton.addEventListener("click", async ()=> {
-        await fetch(`?handler=ToggleWatchLater&mediaId=${mediaId}`, {
+        await fetch(`?handler=ToggleWatchLater&tmdbId=${tmdbId}`, {
             method: "POST",
             headers : {"RequestVerificationToken":token}
         });

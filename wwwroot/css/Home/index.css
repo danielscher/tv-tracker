@@ -65,12 +65,10 @@
     overflow: hidden;
 }
 
-
-
 .search-container {
     padding: unset;
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 135px);
     gap: 10px;
     margin-top: 20px;
 }

@@ -12,8 +12,8 @@ using TvTracker.Data;
 namespace TvTracker.Migrations
 {
     [DbContext(typeof(TvTrackerContext))]
-    [Migration("20260224100811_UserSeriesToSeasonNav")]
-    partial class UserSeriesToSeasonNav
+    [Migration("20260225143841_ApiIds")]
+    partial class ApiIds
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -74,6 +74,9 @@ namespace TvTracker.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.ToTable((string)null);
@@ -115,6 +118,9 @@ namespace TvTracker.Migrations
                     b.Property<Guid>("SeriesId")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TmdbId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("SeriesId");
@@ -143,6 +149,9 @@ namespace TvTracker.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TmdbId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime?>("WatchedAt")

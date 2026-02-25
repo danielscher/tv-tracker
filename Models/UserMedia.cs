@@ -21,7 +21,15 @@ public abstract class UserMedia
     public int ProfileId {get;}
     public Profile Profile {get;}
 
+    /// <summary>
+    /// Internal application media id.
+    /// </summary>
     public Guid MediaId {get;protected set;}
+
+    /// <summary>
+    /// External TMDB API media id.
+    /// </summary>
+    public int TmdbId {get; protected set;}
 
     public WatchStatus Status{get;private set;} = WatchStatus.None;
 
@@ -51,11 +59,12 @@ public abstract class UserMedia
         Status = Status == WatchStatus.WantToWatch ? WatchStatus.None : WatchStatus.WantToWatch;   
     }
 
-    protected UserMedia(Profile profile, Guid mediaId)
+    protected UserMedia(Profile profile, Guid mediaId, int tmdbId)
     {
         Profile = profile;
         ProfileId = profile.Id;
         MediaId = mediaId;
+        TmdbId = tmdbId;
     }
 
     protected UserMedia()

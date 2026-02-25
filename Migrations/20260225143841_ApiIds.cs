@@ -6,16 +6,44 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TvTracker.Migrations
 {
     /// <inheritdoc />
-    public partial class UserSeriesToSeasonNav : Migration
+    public partial class ApiIds : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "TmdbId",
+                table: "UserMedia",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: 0);
+
             migrationBuilder.AddColumn<Guid>(
                 name: "UserSeriesId",
                 table: "UserMedia",
                 type: "TEXT",
                 nullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "TmdbId",
+                table: "Series",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "TmdbId",
+                table: "Seasons",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.AddColumn<int>(
+                name: "TmdbId",
+                table: "Movies",
+                type: "INTEGER",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserMedia_UserSeriesId",
@@ -42,8 +70,24 @@ namespace TvTracker.Migrations
                 table: "UserMedia");
 
             migrationBuilder.DropColumn(
+                name: "TmdbId",
+                table: "UserMedia");
+
+            migrationBuilder.DropColumn(
                 name: "UserSeriesId",
                 table: "UserMedia");
+
+            migrationBuilder.DropColumn(
+                name: "TmdbId",
+                table: "Series");
+
+            migrationBuilder.DropColumn(
+                name: "TmdbId",
+                table: "Seasons");
+
+            migrationBuilder.DropColumn(
+                name: "TmdbId",
+                table: "Movies");
         }
     }
 }

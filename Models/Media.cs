@@ -4,6 +4,8 @@ namespace TvTracker.Models;
 public abstract class Media
 {
     public Guid Id {get;}
+
+    public int TmdbId {get;}
     
     /// <summary>
     /// Holds general info regarding the media.
@@ -17,8 +19,9 @@ public abstract class Media
     /// </summary>
     public IEnumerable<CastMember> Cast => _cast;
 
-    protected Media(MediaMetaInfo mediaInfo) 
+    protected Media(int tmdbId, MediaMetaInfo mediaInfo) 
     {
+        TmdbId = tmdbId;
         MediaInfo = mediaInfo;
     }
 

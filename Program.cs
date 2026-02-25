@@ -21,6 +21,12 @@ builder.Services.AddDbContext<TvTrackerContext>(options =>
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<UserMediaService>();
 builder.Services.AddScoped(typeof(MediaService<>));
+builder.Services.AddHttpClient<TmbdService>(
+    client =>
+    {   
+        client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
+    }
+);
 
 // builder.Logging.AddConsole();
 // builder.Logging.SetMinimumLevel(LogLevel.Debug);

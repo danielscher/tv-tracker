@@ -4,9 +4,10 @@ using TvTracker.Services;
 
 namespace TvTracker.Pages;
 
-public class IndexModel(ProfileService service) : PageModel
+public class IndexModel(ProfileService service, TmbdService tmdbService) : PageModel
 {
     private readonly ProfileService _service = service;
+    private readonly TmbdService _tmdbService = tmdbService;
     public ICollection<Profile> Profiles{get;set;} = [];
 
     public async Task OnGet()

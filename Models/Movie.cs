@@ -11,7 +11,7 @@ public class Movie : Media
 
     public int ReleaseYear{get;}
 
-    public Movie(MediaMetaInfo mediaInfo, int length, int releaseYear) : base(mediaInfo)
+    public Movie(int tmdbId, MediaMetaInfo mediaInfo, int length, int releaseYear) : base(tmdbId,mediaInfo)
     {
         Length = length;
         ReleaseYear = releaseYear;
@@ -26,7 +26,12 @@ public class Movie : Media
 
     public override MediaView ToResponse()
     {
-        return new MediaView(Id, Enums.MediaType.Movie, MediaInfo.Title,MediaInfo.PosterPath);
+        return new MediaView(Id, Enums.MediaType.Movie, MediaInfo.Title,MediaInfo.PosterPath,null,null);
     }
 
+    public static Movie CreateMovie(MovieDetailsResponse dto) 
+    {   
+        var info = new MediaMetaInfo(dto.Title,dto.PosterPath,dto.Language);
+        return new Movie(dto.Id,info,dto.Runtime,int.Parse(dto.ReleaseDate[..4]));
+    }
 }
