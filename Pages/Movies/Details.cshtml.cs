@@ -33,7 +33,7 @@ public class DetailsModel: PageModel
 
     public async Task<IActionResult> OnGet(int tmdbId)
     {
-        var response = await _tmdbService.getMovieDetails(tmdbId);
+        var response = await _tmdbService.GetMovieDetails(tmdbId);
         MovieView = response != null ? new(response,_tmdbService.PosterUrlBuilder) : null;
 
         if (MovieView == null)
@@ -92,7 +92,7 @@ public class DetailsModel: PageModel
             return existing;
 
         // otherwise create new
-        var dto = await _tmdbService.getMovieDetails(tmdbId);
+        var dto = await _tmdbService.GetMovieDetails(tmdbId);
         var movie = Movie.CreateMovie(dto!,_tmdbService.PosterUrlBuilder);
 
         movie = await _movieService.PersistMedia(movie);

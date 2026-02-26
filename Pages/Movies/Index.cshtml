@@ -26,11 +26,10 @@
                 <div class="card-container">
                     @foreach(var um in Model.WatchList) 
                     {
-                        // TODO: class is not being set on anchor.
-                        <a asp-page="/Movies/Details" asp-route-id="@um.MediaId">
+                        <a asp-page="/Movies/Details" asp-route-tmdbId="@um.TmdbId">
                             <div class="media-card">
                                 @if(@um.MediaPosterPath != null) {
-                                    <img src="@Url.Content($"~/{@um.MediaPosterPath}")" alt="@um.MediaTitle" />
+                                    <img src=@um.MediaPosterPath alt="@um.MediaTitle" />
                                 }
                                 <span class="media-rating">
                                     @um.Rating
@@ -50,10 +49,10 @@
                 <div class="card-container">
                     @foreach(var um in Model.AlreadyWatch) 
                     {
-                        <a asp-page="/Movies/Details" asp-route-id="@um.MediaId">
+                        <a asp-page="/Movies/Details" asp-route-tmdbId="@um.TmdbId">
                             <div class="media-card">
                                     @if(um.MediaPosterPath != null) {
-                                        <img src="@Url.Content($"~/{@um.MediaPosterPath}")" alt="@um.MediaTitle" />
+                                        <img src=@um.MediaPosterPath alt="@um.MediaTitle" />
                                     }
                                     <span class="media-rating">
                                         @um.Rating
