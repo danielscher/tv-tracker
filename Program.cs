@@ -21,14 +21,13 @@ builder.Services.AddDbContext<TvTrackerContext>(options =>
 builder.Services.Configure<TmdbOptions>(
     builder.Configuration.GetSection("Tmdb"));
 
+builder.Services.AddMemoryCache();
+
 // inject services
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<UserMediaService>();
 builder.Services.AddScoped(typeof(MediaService<>));
 builder.Services.AddHttpClient<TmdbService>();
-
-// builder.Logging.AddConsole();
-// builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 
 var app = builder.Build();
@@ -59,6 +58,6 @@ if (!ctx.Profiles.Any())
 {
     TvTrackerContext.SeedData(ctx);
 }
-/**/
+/* =============================== */
 
 app.Run();
