@@ -11,13 +11,12 @@ public class ShowsModel: PageModel
 {
     private readonly UserMediaService _userMediaService;
     private readonly MediaService<Series> _seriesService;
-    private readonly TmbdService _tmdbService;
+    private readonly TmdbService _tmdbService;
 
     public List<MediaView> WatchList {get; private set;}= [];
     public List<MediaView> AlreadyWatch {get; private set;} = [];
-    public List<MediaView> SearchedSeries {get; private set;} = [];
 
-    public ShowsModel(UserMediaService userMediaService, MediaService<Series> seriesService,TmbdService tmbdService)
+    public ShowsModel(UserMediaService userMediaService, MediaService<Series> seriesService,TmdbService tmbdService)
     {
         _userMediaService = userMediaService;
         _seriesService = seriesService;

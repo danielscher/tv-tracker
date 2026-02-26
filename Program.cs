@@ -17,16 +17,15 @@ builder.Services.AddDbContext<TvTrackerContext>(options =>
     options
     .UseSqlite(sqliteSourceStr));
 
+// bind appsettings.json
+builder.Services.Configure<TmdbOptions>(
+    builder.Configuration.GetSection("Tmdb"));
+
 // inject services
 builder.Services.AddScoped<ProfileService>();
 builder.Services.AddScoped<UserMediaService>();
 builder.Services.AddScoped(typeof(MediaService<>));
-builder.Services.AddHttpClient<TmbdService>(
-    client =>
-    {   
-        client.BaseAddress = new Uri("https://api.themoviedb.org/3/");
-    }
-);
+builder.Services.AddHttpClient<TmdbService>();
 
 // builder.Logging.AddConsole();
 // builder.Logging.SetMinimumLevel(LogLevel.Debug);

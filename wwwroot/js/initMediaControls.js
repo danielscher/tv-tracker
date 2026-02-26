@@ -3,6 +3,7 @@
  */
 export function initMediaControls(antiForgeryToken) {
     const tmdbId = document.getElementById("media-controls").dataset.tmdbId;
+    console.log(`id: ${tmdbId}`);
     initRateButtons(tmdbId,antiForgeryToken);
     initWatchLaterButton(tmdbId,antiForgeryToken);
 }
@@ -60,7 +61,6 @@ function initRateButtons(tmdbId,token) {
 function initWatchLaterButton(tmdbId, token) {
 
     const watchButton = document.getElementById("toggle-watch-later");
-
     watchButton.addEventListener("click", async ()=> {
         await fetch(`?handler=ToggleWatchLater&tmdbId=${tmdbId}`, {
             method: "POST",

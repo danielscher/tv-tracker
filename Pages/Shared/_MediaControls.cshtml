@@ -2,7 +2,7 @@
 @Html.AntiForgeryToken()
 @model MediaControlsViewModel
 
-<div id="media-controls" class="media-controls" data-media-id="@Model.TmdbId">
+<div id="media-controls" class="media-controls" data-tmdb-id="@Model.TmdbId">
     <div class="rating-wrapper">
         <button id="rating-button" class="rating-button">
             @(Model.Rating?.ToString() ?? "Rate")

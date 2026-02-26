@@ -14,7 +14,7 @@ public class DetailsModel: PageModel
     private readonly UserMediaService _userMediaService;
     private readonly MediaService<Movie> _movieService;
     private readonly ProfileService _profileService;
-    private readonly TmbdService _tmbdService;
+    private readonly TmdbService _tmdbService;
 
     // public Movie? Movie {get; set;}
     public MovieView? MovieView {get;private set;}
@@ -23,21 +23,18 @@ public class DetailsModel: PageModel
     public MediaControlsViewModel? MediaControls {get; set;}
 
 
-    public DetailsModel(UserMediaService userMediaService, MediaService<Movie> movieService, ProfileService profileService, TmbdService tmdbService)
+    public DetailsModel(UserMediaService userMediaService, MediaService<Movie> movieService, ProfileService profileService, TmdbService tmdbService)
     {
         _userMediaService = userMediaService;
         _movieService = movieService;
         _profileService = profileService;
-        _tmbdService = tmdbService;
+        _tmdbService = tmdbService;
     }
 
     public async Task<IActionResult> OnGet(int tmdbId)
     {
-        Console.WriteLine(tmdbId);
-        var response = await _tmbdService.getMovieDetails(tmdbId);
-        MovieView = response != null ? new(response) : null;
-
-        Console.WriteLine($"poster: {MovieView?.PosterPath}");
+        var response = await _tmdbService.getMovieDetails(tmdbId);
+        MovieView = response != null ? new(response,_tmdbService.PosterUrlBuilder) : null;
 
         if (MovieView == null)
         {
@@ -88,15 +85,15 @@ public class DetailsModel: PageModel
     {
         // fetch existing
         var existing = (await _userMediaService
-            .GetUserMediaByProfileIdAndTmdbId(profileId, tmdbId))
+            .GetUserMediaByProfileIdAndTmdbIdOptional(profileId, tmdbId))
             ?.Flatten();
 
         if (existing is not null)
             return existing;
 
         // otherwise create new
-        var dto = await _tmbdService.getMovieDetails(tmdbId);
-        var movie = Movie.CreateMovie(dto!);
+        var dto = await _tmdbService.getMovieDetails(tmdbId);
+        var movie = Movie.CreateMovie(dto!,_tmdbService.PosterUrlBuilder);
 
         movie = await _movieService.PersistMedia(movie);
 

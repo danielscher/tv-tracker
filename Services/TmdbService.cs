@@ -1,30 +1,23 @@
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.Extensions.Options;
 using TvTracker.Exception;
 using TvTracker.Models.DTOs;
 using TvTracker.Models.View;
 
-public class TmbdService
+public class TmdbService
 {
     private readonly HttpClient _client;
-    private readonly string _apiKey;
+    private readonly TmdbOptions _options;
 
-    public TmbdService(HttpClient client, IConfiguration config)
+    private readonly string imageWidth = "w500"; // hardcoded for now.
+
+    public TmdbService(HttpClient client, IOptions<TmdbOptions> options)
     {
         _client = client;
-        _apiKey = config.GetValue<string>("Tmdb:ApiKey") ?? throw new ConfigurationException("TMBD API key not found.");
-        Console.WriteLine(_apiKey);
-    }
-
-    public async Task Test()
-    {
-        var url = BuildUrl("movie/1368166", new()
-        {
-        });
-        var response = await _client.GetAsync(url);
-        var body = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(body);
+        _options = options.Value;
+        _client.BaseAddress = new Uri(_options.BaseUrl);
     }
 
     public async Task<ICollection<SearchResponseView>> SearchMovies(string query)
@@ -35,9 +28,6 @@ public class TmbdService
             ["language"] = "en-US",
 
         });
-
-        Console.WriteLine($" baseURL: {_client.BaseAddress}");
-        Console.WriteLine($"URL: {url}");
 
         var response = await _client.GetAsync(url);
 
@@ -51,7 +41,7 @@ public class TmbdService
                 {
                     TmdbId = x.TmdbId,
                     Title = x.Title,
-                    PosterPath = x.PosterPath
+                    PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
                 })
                 .ToList() ?? [];
     }
@@ -75,7 +65,7 @@ public class TmbdService
                 {
                     TmdbId = x.TmdbId,
                     Title = x.Title,
-                    PosterPath = x.PosterPath
+                    PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
                 }).ToList() ?? [];
         return mapped;
     }
@@ -87,10 +77,6 @@ public class TmbdService
             ["append_to_response"] = "credits"
         });
 
-
-        Console.WriteLine($" baseURL: {_client.BaseAddress}");
-        Console.WriteLine($"URL: {movieURL}");
-
         var movieResponse = await _client.GetAsync(movieURL);
         movieResponse.EnsureSuccessStatusCode();
 
@@ -101,10 +87,33 @@ public class TmbdService
         
     }
 
+    public async Task<SeriesDetailsResponse?> GetSeriesDetails(int tmdbSeriesId)
+    {
+        var movieURL = BuildUrl($"tv/{tmdbSeriesId}", new ()
+        {
+            ["append_to_response"] = "credits"
+        });
+
+        var response = await _client.GetAsync(movieURL);
+        response.EnsureSuccessStatusCode();
+
+        var seriesResponse = await response.Content
+            .ReadFromJsonAsync<SeriesDetailsResponse>();
+        
+        return seriesResponse;
+    }
+
     private string BuildUrl(string path, Dictionary<string, string?> queryParams)
     {
-        queryParams["api_key"] = _apiKey;
+        queryParams["api_key"] = _options.ApiKey;
 
         return QueryHelpers.AddQueryString(path, queryParams);
     }
+
+    public string PosterUrlBuilder(string posterPath)
+    {
+        return $"{_options.ImageBaseUrl}\\{imageWidth}\\{posterPath}";
+    }
+
+
 }

@@ -174,3 +174,8 @@
 .season-card .episode-num {
     font-size: smaller;
 }
+
+.season-card img {
+    width: 130px;
+    height: 180px;
+}

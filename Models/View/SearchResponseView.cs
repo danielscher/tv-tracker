@@ -11,8 +11,8 @@ public record SearchResponseView
     public int TmdbId { get; init; }
     [JsonPropertyName("Title")]
     public string? Title { get; init; }
-    [JsonPropertyName("PosterPath")]
-    public string? PosterPath { get; init; }
+    [JsonPropertyName("PosterUrl")]
+    public string? PosterUrl { get; init; }
 }
 
 

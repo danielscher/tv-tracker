@@ -12,13 +12,13 @@ public class MoviesModel: PageModel
     private readonly UserMediaService _userMediaService;
     private readonly MediaService<Movie> _movieService;
 
-    private readonly TmbdService _tmbdService;
+    private readonly TmdbService _tmbdService;
 
     public List<Movie> SearchResult {get; private set;} = [];
     public List<MediaView> WatchList {get; private set;}= [];
     public List<MediaView> AlreadyWatch {get; private set;} = [];
 
-    public MoviesModel(UserMediaService userMediaService, MediaService<Movie> movieService, TmbdService tmbdService)
+    public MoviesModel(UserMediaService userMediaService, MediaService<Movie> movieService, TmdbService tmbdService)
     {
         _userMediaService = userMediaService;
         _movieService = movieService;

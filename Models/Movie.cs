@@ -26,12 +26,13 @@ public class Movie : Media
 
     public override MediaView ToResponse()
     {
-        return new MediaView(Id, Enums.MediaType.Movie, MediaInfo.Title,MediaInfo.PosterPath,null,null);
+        return new MediaView(Id, TmdbId, Enums.MediaType.Movie, MediaInfo.Title,MediaInfo.PosterPath,null,null);
     }
 
-    public static Movie CreateMovie(MovieDetailsResponse dto) 
+    public static Movie CreateMovie(MovieDetailsResponse dto,Func<string,string> imageUrlBuilder) 
     {   
-        var info = new MediaMetaInfo(dto.Title,dto.PosterPath,dto.Language);
+        var imageUrl = dto.PosterPath != null ? imageUrlBuilder(dto.PosterPath):null;
+        var info = new MediaMetaInfo(dto.Title,imageUrl,dto.Language);
         return new Movie(dto.Id,info,dto.Runtime,int.Parse(dto.ReleaseDate[..4]));
     }
 }

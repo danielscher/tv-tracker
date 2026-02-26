@@ -6,11 +6,11 @@ public class CastMemberView
     public string ActorName {get;}
     public string? PosterPath {get;}
 
-    public CastMemberView(CastMemberResponse memberResponse)
+    public CastMemberView(CastMemberResponse memberResponse,Func<string,string> imageUrlBuilder)
     {
         CharacterName = memberResponse.CharacterName;
         ActorId = memberResponse.ActorId;
         ActorName = memberResponse.ActorName;
-        PosterPath = memberResponse.PosterPath;
+        PosterPath = imageUrlBuilder(memberResponse.PosterPath);
     }
 }

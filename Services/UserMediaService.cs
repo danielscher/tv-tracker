@@ -216,7 +216,7 @@ public class UserMediaService(TvTrackerContext context)
             _ => throw new NotImplementedException()
         };
 
-        return new MediaView(u.MediaId, type, title, poster, u.Rating, u.Status);
+        return new MediaView(u.MediaId, u.TmdbId,type, title, poster, u.Rating, u.Status);
     }
 
 }

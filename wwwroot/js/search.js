@@ -52,9 +52,9 @@ export function searchMediaOnInput(inputId, resultContainerId, handlerUrl, redir
                 li.className = "media-card";
 
                 // set image or image alternative if missing
-                if (item.PosterPath) {
+                if (item.PosterUrl) {
                     const img = document.createElement("img");
-                    img.src = `https://image.tmdb.org/t/p/w500/${item.PosterPath}`;
+                    img.src = item.PosterUrl;
                     li.appendChild(img);
                 } else {
                     const placeholder = document.createElement("div");

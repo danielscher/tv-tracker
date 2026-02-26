@@ -1,4 +1,4 @@
-@page "{id:guid}"
+@page "{tmdbId:int}"
 @using TvTracker.Models.View
 @model Shows.DetailsModel
 @Html.AntiForgeryToken()
@@ -7,12 +7,12 @@
 }
 <div class="main-content">
     <div class="media-banner">
-        <img src="@Url.Content($"~/{Model.Series?.MediaInfo.PosterPath}")" alt="" />
+        <img src=@Model.SeriesView?.PosterUrl alt="" />
         <div class="media-title">
-            <h2>@Model.Series?.MediaInfo.Title</h2>
+            <h2>@Model.SeriesView?.Title</h2>
         </div>
 
-        @if(Model.MediaControls != null && Model.Series != null) {
+        @if(Model.MediaControls != null && Model.SeriesView != null) {
            <partial name="_MediaControls"
             model="Model.MediaControls" />
         }
@@ -22,10 +22,10 @@
         <h3>Cast</h3>
 
         <div class="cards-container">  
-            @foreach(var member in Model.Series?.Cast) {
+            @foreach(var member in Model.SeriesView?.Cast) {
                 <div class="cast-card">
-                    <img src="@Url.Content($"~/{member.Actor.PosterPath}")"/>
-                    <span class="actor-name">@member.Actor.FullName</span>
+                    <img src=@member.PosterPath/>
+                    <span class="actor-name">@member.ActorName</span>
                     <span class="character-name">@member.CharacterName</span>
                 </div>
             }
@@ -36,12 +36,12 @@
     <div class="seasons-container">
         <h3>Seasons</h3>
         <div class ="cards-container">
-        @foreach(var userSeason in Model.UserSeries?.UserSeasons) {
+        @foreach(var season in Model.SeriesView.Seasons) {
             <div class="season-card">
-                <div class="placeholder-poster"></div>
-                <span>@userSeason.Rating</span>
-                <span>Season @userSeason.Season.SeasonNumber</span>
-                <span class="episode-num">@userSeason.Season.Episodes episodes</span>
+                @* <div class="placeholder-poster"></div> *@
+                <img src= @season.PosterUrl/>
+                <span>@season.Title</span>
+                <span class="episode-num">@season.EpisodeCount episodes</span>
             </div>
         }
         </div>

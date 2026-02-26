@@ -29,10 +29,10 @@
                     <div class="card-container">
                         @foreach(var um in Model.WatchList) 
                         {   
-                           <a asp-page="/Shows/Details" asp-route-id="@um.MediaId">  
+                           <a asp-page="/Shows/Details" asp-route-id="@um.TmdbId">  
                                 <div class="media-card">
-                                    @if(@um.MediaPosterPath != null) {
-                                        <img src="@Url.Content($"~/{@um.MediaPosterPath}")" alt="@um.MediaTitle" />
+                                    @if(um.MediaPosterPath != null) {
+                                        <img src=@um.MediaPosterPath alt="@um.MediaTitle" />
                                     }
                                     <span class="media-rating">
                                         @um.Rating
@@ -52,11 +52,10 @@
                     <div class="card-container">
                         @foreach(var um in Model.AlreadyWatch) 
                         {
-                           <a asp-page="/Shows/Details" asp-route-id="@um.MediaId">  
+                           <a asp-page="/Shows/Details" asp-route-id="@um.TmdbId">  
                                 <div class="media-card">
-                                    @if(@um.MediaPosterPath != null) {
-                                        <img src="@Url.Content($"~/{@um.MediaPosterPath}")" alt="@um.MediaTitle" />
-
+                                    @if(um.MediaPosterPath != null) {
+                                        <img src=@um.MediaPosterPath alt="@um.MediaTitle" />
                                     }
                                     <span class="media-rating">
                                         @um.Rating
