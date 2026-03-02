@@ -1,0 +1,25 @@
+@using TvTracker.Models.View
+@model MediaCardsSectionView
+
+  
+
+@if(Model.MediaViews.Count != 0) { 
+    <div class="media-cards-section">
+
+        <h3>@Model.SectionName</h3>
+
+        <div class="card-container">
+            @foreach(var mediaView in Model.MediaViews) 
+            {
+                <a asp-page="/Movies/Details" asp-route-tmdbId="@mediaView.TmdbId">
+                    <div class="media-card">
+                        <img src=@mediaView.PosterUrl alt="@mediaView.Title" />
+                        <span class="media-rating">
+                            @mediaView.Rating
+                        </span>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
+}

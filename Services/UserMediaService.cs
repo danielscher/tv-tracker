@@ -4,6 +4,7 @@ using TvTracker.Models;
 using TvTracker.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using TvTracker.Models.DTOs;
+using TvTracker.Models.View;
 
 
 namespace TvTracker.Services;
@@ -87,9 +88,8 @@ public class UserMediaService(TvTrackerContext context)
         return us;
     }
 
-    public async Task<UserMedia> RateUserMedia(int profileId, Guid userMediaId ,int rating)
+    public async Task<UserMedia> RateUserMedia(int profileId, Guid userMediaId ,int? rating)
     {
-        Console.WriteLine($"new rating: {rating}");
         var um = await getUserMediaByIdAndProfileId(userMediaId,profileId);
         um.Rating = rating;
         await _context.SaveChangesAsync();
@@ -180,43 +180,4 @@ public class UserMediaService(TvTrackerContext context)
             .OrderBy(u => u.WatchedAt)
             .ToListAsync();
     }
-
-    /// <summary>
-    /// Maps UserMedia to a dto version.
-    /// </summary>
-    /// <param name="u"></param>
-    /// <returns></returns>
-    /// <exception cref="InvalidDataException"></exception>
-    /// <exception cref="NotImplementedException"></exception>
-    public MediaView ToView(UserMedia u)
-        {
-        const string errorMsg = "UserSeason is not supported here.";
-
-        string title = u switch
-        {
-            UserMovie m => m.Movie.MediaInfo.Title,
-            UserSeries s => s.Series.MediaInfo.Title,
-            UserSeason _ => throw new InvalidDataException(errorMsg),
-            _ => throw new NotImplementedException()
-        };
-
-        string? poster = u switch
-        {
-            UserMovie m => m.Movie.MediaInfo.PosterPath,
-            UserSeries s => s.Series.MediaInfo.PosterPath,
-            UserSeason _ => throw new InvalidDataException(errorMsg),
-            _ => throw new NotImplementedException()
-        };
-
-        MediaType type = u switch
-        {
-            UserMovie _ => MediaType.Movie,
-            UserSeries _ => MediaType.Series,
-            UserSeason _ => throw new InvalidDataException(errorMsg),
-            _ => throw new NotImplementedException()
-        };
-
-        return new MediaView(u.MediaId, u.TmdbId,type, title, poster, u.Rating, u.Status);
-    }
-
 }

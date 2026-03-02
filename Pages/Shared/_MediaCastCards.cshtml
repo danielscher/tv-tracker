@@ -1,0 +1,16 @@
+@using TvTracker.Models.View
+@model ICollection<CastMemberView>
+    <div class="cast-container">
+        <h3>Cast</h3>
+
+        <div class="cards-container">  
+            @foreach(var member in Model) {
+                <div class="cast-card">
+                    <img src=@member.PosterPath/>
+                    <span class="actor-name">@member.ActorName</span>
+                    <span class="character-name">@member.CharacterName</span>
+                </div>
+            }
+        </div>
+
+    </div>

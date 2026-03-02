@@ -1,20 +1,26 @@
 @page "{tmdbId:int}"
+@using TvTracker.Models.Enums
+@using TvTracker.Models.View
 @model Movies.DetailsModel
 @section Styles {
     <link rel="stylesheet" href="~/css/Home/index.css" asp-append-version="true" />
 }
 <div class="main-content">
 
-    <div class="media-banner">
-        <img src=@Model.MovieView?.PosterUrl alt="" />
-        <div class="media-title">
-            <h2>@Model.MovieView?.Title</h2>
-        </div>
-        @if(Model.MediaControls != null && Model.MovieView != null) {
-           <partial name="_MediaControls"
-            model="Model.MediaControls" />
-        }
-    </div>
+    @if(Model.MovieView != null) {
+        <partial name="_MediaBanner" model="@(new MediaView
+        (
+            Model.MovieView.TmdbId,
+            MediaType.Movie,
+            Model.MovieView.Title,
+            Model.MovieView.PosterUrl,
+            Model.MovieView.ReleaseDate,
+            Model.UserMediaInfo?.Rating,
+            Model.UserMediaInfo?.Status,
+            Model.UserMediaInfo?.WatchDate
+        ))" 
+        />
+    }   
 
     <div class="cast-container">
         <h3>Cast</h3>

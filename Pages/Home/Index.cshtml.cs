@@ -10,7 +10,7 @@ public class HomeModel: PageModel
     private readonly UserMediaService _service;
 
     public List<UserSeries> UserSeries {get; private set;} = [];
-    public List<UserMovie> UserMovies {get; private set;}= [];
+    public List<UserMovie> UserMovies {get; private set;} = [];
 
     public HomeModel(UserMediaService service)
     {

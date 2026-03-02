@@ -1,14 +1,20 @@
+@using TvTracker.Models.Enums
 @using TvTracker.Models.View
 @Html.AntiForgeryToken()
-@model MediaControlsViewModel
+@model MediaView
 
 <div id="media-controls" class="media-controls" data-tmdb-id="@Model.TmdbId">
     <div class="rating-wrapper">
-        <button id="rating-button" class="rating-button">
-            @(Model.Rating?.ToString() ?? "Rate")
+
+        <button id="rating-button" class="rating-button" data-rating=@Model.Rating>
+            <div id="rating-button-contents">
+                @* filled dynamically by js *@
+            </div> 
         </button>
+
         <div id="rating-container" class="rating-container hidden">
             <div class="arrow"></div>
+            <button id="clear-rating">clear</button>
             @for (int i = 10; i >= 1; i--)
             {
                 <input type="radio"
@@ -22,7 +28,15 @@
     </div>
 
     <button id="toggle-watch-later">
-        @(Model.Status.ToString() ?? "Watch Later")
+        @if(Model.Status.Equals(WatchStatus.WantToWatch)) {
+            <img src="~/assets/icons/bookmark-full.svg" alt="">
+        } else {
+            <img src="~/assets/icons/bookmark.svg" alt="">
+        }
+    </button>
+
+    <button>
+        Mark as watched
     </button>
 
     <span>@Model.WatchDate</span>

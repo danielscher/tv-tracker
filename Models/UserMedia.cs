@@ -3,6 +3,7 @@
 
 using TvTracker.Models.DTOs;
 using TvTracker.Models.Enums;
+using TvTracker.Models.View;
 
 namespace TvTracker.Models;
 
@@ -76,4 +77,6 @@ public abstract class UserMedia
     {
         return new UserMediaInfo(Id,Rating,Status,WatchedAt);
     }
+
+    public abstract MediaView ToView();
 }

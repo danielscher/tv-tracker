@@ -20,7 +20,6 @@ public class DetailsModel: PageModel
     public MovieView? MovieView {get;private set;}
     public UserMediaInfo? UserMediaInfo {get;private set;}
     public List<CastMember> Cast {get; private set;} = [];
-    public MediaControlsViewModel? MediaControls {get; set;}
 
 
     public DetailsModel(UserMediaService userMediaService, MediaService<Movie> movieService, ProfileService profileService, TmdbService tmdbService)
@@ -46,18 +45,10 @@ public class DetailsModel: PageModel
         .GetUserMediaByProfileIdAndTmdbIdOptional(profileId,tmdbId))?
         .Flatten() ?? null;
 
-        MediaControls = new()
-        {
-            TmdbId = tmdbId,
-            Rating = UserMediaInfo?.Rating,
-            Status = UserMediaInfo?.Status,
-            WatchDate = UserMediaInfo?.WatchDate
-        };
-
         return Page();
     }   
 
-     public async Task<IActionResult> OnPostRate(int tmdbId, int rating) 
+     public async Task<IActionResult> OnPostRate(int tmdbId, int? rating) 
     {
         var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);

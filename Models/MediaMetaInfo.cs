@@ -9,6 +9,7 @@ public class MediaMetaInfo
     public string Title{get;}
     public string Language{get;}
     public string? PosterPath{get;set;}
+    public DateTime? ReleaseDate {get;set;}
 
     /// <summary>
     /// Genres associated with the media type e.g., comedy, romance, etc.
@@ -21,7 +22,7 @@ public class MediaMetaInfo
             Genres.Add(genre);
     }
 
-    public MediaMetaInfo(string title, string? posterPath, string language)
+    public MediaMetaInfo(string title, string? posterPath, string language, DateTime? releaseDate)
     {
         ArgumentException.ThrowIfNullOrEmpty(title);
         Title = title;
@@ -30,6 +31,7 @@ public class MediaMetaInfo
 
         ArgumentException.ThrowIfNullOrEmpty(language);
         Language = language;
+        ReleaseDate = releaseDate;
     }
 }
 

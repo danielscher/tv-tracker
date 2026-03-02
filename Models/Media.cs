@@ -1,4 +1,5 @@
 using TvTracker.Models.DTOs;
+using TvTracker.Models.View;
 
 namespace TvTracker.Models;
 public abstract class Media
@@ -48,10 +49,5 @@ public abstract class Media
             AddCast(member);
         }
     }
-    
-    /// <summary>
-    /// Returns a flattened out version for UI.
-    /// </summary>
-    public abstract MediaView ToResponse();
 
 }

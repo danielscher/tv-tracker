@@ -1,4 +1,5 @@
 using TvTracker.Models.DTOs;
+using TvTracker.Models.View;
 
 namespace TvTracker.Models;
 public class Movie : Media
@@ -9,30 +10,23 @@ public class Movie : Media
     /// </summary>
     public int Length{get;}
 
-    public int ReleaseYear{get;}
 
-    public Movie(int tmdbId, MediaMetaInfo mediaInfo, int length, int releaseYear) : base(tmdbId,mediaInfo)
+    public Movie(int tmdbId, MediaMetaInfo mediaInfo, int length) : base(tmdbId,mediaInfo)
     {
         Length = length;
-        ReleaseYear = releaseYear;
     }
 
     // EF materialization.
-    private Movie(int length, int releaseYear) : base()
+    private Movie(int length) : base()
     {
         Length = length;
-        ReleaseYear = releaseYear;
-    }
-
-    public override MediaView ToResponse()
-    {
-        return new MediaView(Id, TmdbId, Enums.MediaType.Movie, MediaInfo.Title,MediaInfo.PosterPath,null,null);
     }
 
     public static Movie CreateMovie(MovieDetailsResponse dto,Func<string,string> imageUrlBuilder) 
     {   
         var imageUrl = dto.PosterPath != null ? imageUrlBuilder(dto.PosterPath):null;
-        var info = new MediaMetaInfo(dto.Title,imageUrl,dto.Language);
-        return new Movie(dto.Id,info,dto.Runtime,int.Parse(dto.ReleaseDate[..4]));
+        DateTime? releaseDate = dto.ReleaseDate != null ? DateTime.Parse(dto.ReleaseDate) : default(DateTime?);
+        var info = new MediaMetaInfo(dto.Title,imageUrl,dto.Language,releaseDate);
+        return new Movie(dto.Id,info,dto.Runtime);
     }
 }

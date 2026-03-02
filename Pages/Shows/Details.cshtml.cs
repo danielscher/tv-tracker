@@ -20,9 +20,6 @@ public class DetailsModel: PageModel
 
     public UserMediaInfo? UserMediaInfo{get; private set;}
 
-    public MediaControlsViewModel? MediaControls {get; set;}
-
-
     public DetailsModel(UserMediaService userMediaService, MediaService<Series> seriesService,ProfileService profileService,TmdbService tmdbService)
     {
         _userMediaService = userMediaService;
@@ -41,15 +38,6 @@ public class DetailsModel: PageModel
         var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
         UserMediaInfo = (await _userMediaService.GetUserMediaByProfileIdAndTmdbIdOptional(profileId,tmdbId))?.Flatten() ?? null;
 
-        // setup partial view model.
-        MediaControls = new()
-        {
-            TmdbId = tmdbId,
-            Status = UserMediaInfo?.Status ?? WatchStatus.None,
-            Rating = UserMediaInfo?.Rating,
-            WatchDate = UserMediaInfo?.WatchDate
-        };
-
         return Page();
     }
 
@@ -67,7 +55,7 @@ public class DetailsModel: PageModel
         return new JsonResult( new {status = UserMediaInfo.Status});
     }
 
-    public async Task<IActionResult> OnPostRate(int tmdbId, int rating) 
+    public async Task<IActionResult> OnPostRate(int tmdbId, int? rating) 
     {
         var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);

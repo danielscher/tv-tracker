@@ -1,5 +1,6 @@
 @page
 @using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using TvTracker.Models.View
 @model Shows.ShowsModel
 @Html.AntiForgeryToken()
 @section Styles {
@@ -20,8 +21,15 @@
 
 
         <div class="user-media-container" id="user-media-content">
+        <partial name="_MediaCardsSection" 
+         model="@(new MediaCardsSectionView("Watch Later",Model.WatchList))" 
+        />
 
-            @if(Model.WatchList.Count != 0) { 
+        <partial name="_MediaCardsSection" 
+         model="@(new MediaCardsSectionView("History",Model.WatchList))" 
+        />
+
+            @* @if(Model.WatchList.Count != 0) { 
                 <div class="recently-watched-container">
 
                     <h3>Watch List</h3>
@@ -65,7 +73,7 @@
                         }
                     </div>
                 </div>
-            }
+            } *@
         </div>
 </div>
 

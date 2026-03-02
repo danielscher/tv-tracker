@@ -89,17 +89,35 @@
 .media-title {
     grid-area: title;
     display: flex;
-    align-items: end;
+    align-items: last baseline;;
 }
 
-.media-banner img {
+.media-banner > img {
     grid-area: poster;
-    width: 15vw;
+    width: 200px;
 }
 
 .media-controls {
     grid-area: controls;
-    display: inline-block;
+    display: flex;
+    height: 40px;
+}
+
+.media-controls button {
+    background-color: unset;
+    border: unset;
+    height: 100%;
+    width: fit-content;
+}
+
+.media-controls button>img {
+    height: 100%;
+
+}
+
+.release-date {
+    color:#3f3f3f;
+    padding-left: 10px;
 }
 
 .rating-wrapper {
@@ -108,8 +126,44 @@
 }
 
 .rating-button {
+    position: relative;
+    border: unset;
+    background-color: unset ;
+    font-weight: bold;
 }
 
+#rating-button-contents {
+    display: flex;
+    flex-direction: row;
+}
+
+.rating-button .no-rating-img{
+    width: 60px;
+}
+
+.rating-button .rating-img {
+    width: 50px;
+}
+
+.rating-button .score {
+    position: absolute;
+    top: 8px;
+    left:47%; /* accounts the irregular shape of parent */
+    transform: translateX(-50%);
+}
+
+.rate-message {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    line-height: 1rem;
+    padding-left: 5px;
+}
+
+.secondary-message {
+    font-size: smaller;
+    font-weight: 100;
+}
 
 .rating-container {
   display: unset;
@@ -118,9 +172,10 @@
   position: absolute;    
   background-color: gray;
   height: 30px;
-    align-items: center;
-    margin-top: 11px;
-    padding: 0 5px;
+  align-items: center;
+  margin-top: 11px;
+  padding: 0 5px;
+  gap: 0 5px;
 }
 
 .rating-container .arrow {
@@ -141,21 +196,31 @@
 }
 
 .rating-container label {
+  width: 28px;
+  height: 28px;
   float: right;
   cursor: pointer;
   color: #ccc;
-  transition: color 0.3s;
+  background-image: url('/assets/popcorn.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.3;
+  color: black;
+  transition: opacity 0.2s ease;
 }
 
-.rating-container label:before {
+
+/* .rating-container label:before {
   content: '\2605';
   font-size: 30px;
-}
+} */
 
 .rating-container input:checked ~ label,
 .rating-container label:hover,
 .rating-container label:hover ~ label {
-  color: #6f00ff;
+  /* color: #6f00ff; */
+  opacity: 1;
 }
 
 
@@ -178,4 +243,8 @@
 .season-card img {
     width: 130px;
     height: 180px;
+}
+
+.flip-horizontal {
+  transform: scaleX(-1);
 }

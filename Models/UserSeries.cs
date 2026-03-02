@@ -1,5 +1,6 @@
 using TvTracker.Models.DTOs;
 using TvTracker.Models.Enums;
+using TvTracker.Models.View;
 
 namespace TvTracker.Models;
 
@@ -23,5 +24,19 @@ public class UserSeries : UserMedia
     private UserSeries() : base()
     {
         Series = null!;   
+    }
+
+        public override MediaView ToView()
+    {
+        return new (
+            Series.TmdbId,
+            Enums.MediaType.Series,
+            Series.MediaInfo.Title,
+            Series.MediaInfo.PosterPath,
+            Series.MediaInfo.ReleaseDate,
+            Rating,
+            Status,
+            WatchedAt
+        );
     }
 }

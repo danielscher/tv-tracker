@@ -1,4 +1,5 @@
 @page "{tmdbId:int}"
+@using TvTracker.Models.Enums
 @using TvTracker.Models.View
 @model Shows.DetailsModel
 @Html.AntiForgeryToken()
@@ -6,32 +7,22 @@
     <link rel="stylesheet" href="~/css/Home/index.css" asp-append-version="true" />
 }
 <div class="main-content">
-    <div class="media-banner">
-        <img src=@Model.SeriesView?.PosterUrl alt="" />
-        <div class="media-title">
-            <h2>@Model.SeriesView?.Title</h2>
-        </div>
+    @if(Model.SeriesView != null) {
+        <partial name="_MediaBanner" model="@(new MediaView
+        (
+            Model.SeriesView.TmdbId,
+            MediaType.Series,
+            Model.SeriesView.Title,
+            Model.SeriesView.PosterUrl,
+            Model.SeriesView.ReleaseDate,
+            Model.UserMediaInfo?.Rating,
+            Model.UserMediaInfo?.Status,
+            Model.UserMediaInfo?.WatchDate
+        ))" 
+        />
+    }   
 
-        @if(Model.MediaControls != null && Model.SeriesView != null) {
-           <partial name="_MediaControls"
-            model="Model.MediaControls" />
-        }
-    </div>
-
-    <div class="cast-container">
-        <h3>Cast</h3>
-
-        <div class="cards-container">  
-            @foreach(var member in Model.SeriesView?.Cast) {
-                <div class="cast-card">
-                    <img src=@member.PosterPath/>
-                    <span class="actor-name">@member.ActorName</span>
-                    <span class="character-name">@member.CharacterName</span>
-                </div>
-            }
-        </div>
-
-    </div>
+    <partial name="_MediaCastCards" model="@Model.SeriesView?.Cast" />
 
     <div class="seasons-container">
         <h3>Seasons</h3>
@@ -45,7 +36,6 @@
             </div>
         }
         </div>
-
     </div>
 
 </div>

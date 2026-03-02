@@ -1,6 +1,6 @@
 namespace TvTracker.Models;
 
-public class Season(int seasonNumber, int episodes, int episodeLength)
+public class Season(int seasonNumber, int episodes, int episodeLength, DateTime? releaseDate)
 {
     public Guid Id {get;}
 
@@ -26,4 +26,6 @@ public class Season(int seasonNumber, int episodes, int episodeLength)
     /// Assumes the same length for each episode as typically this doesn't very much. 
     /// </summary>
     public int EpisodeLength{get;} = episodeLength;
+
+    public DateTime? ReleaseDate {get;}= releaseDate;
 }

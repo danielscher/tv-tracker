@@ -38,15 +38,11 @@ public class Series : Media
         }
     }
 
-    public override MediaView ToResponse()
-    {
-        return new MediaView(Id, TmdbId,MediaType.Series, MediaInfo.Title, MediaInfo.PosterPath,null,null);
-    }
-
     public static Series Create(SeriesDetailsResponse dto, Func<string,string> imageUrlBuilder) 
     {   
         var imageUrl = dto.PosterPath != null ? imageUrlBuilder(dto.PosterPath) : null;
-        var info = new MediaMetaInfo(dto.Title,imageUrl,dto.Language);
+        DateTime? releaseDate = dto.ReleaseDate != null ? DateTime.Parse(dto.ReleaseDate) : default(DateTime?);
+        var info = new MediaMetaInfo(dto.Title,imageUrl,dto.Language,releaseDate);
         var status = StatusMapper.ToDomain(dto.Status);
         return new Series(dto.Id,info,status);
     }

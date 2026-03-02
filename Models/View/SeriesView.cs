@@ -6,6 +6,7 @@ public class SeriesView
     public Guid? MediaId {get;set;}
     public int TmdbId {get;}
     public string Title {get;}
+    public DateTime? ReleaseDate {get;}
     public string Description {get;}
     public string? PosterUrl {get;}
     public ICollection<SeasonView> Seasons {get;} =[];
@@ -17,6 +18,7 @@ public class SeriesView
         MediaId = null;
         TmdbId = seriesResponse.Id;
         Title = seriesResponse.Title;
+        ReleaseDate = seriesResponse.ReleaseDate != null ? DateTime.Parse(seriesResponse.ReleaseDate) : null;
         Description = seriesResponse.Description;
         PosterUrl = imageUrlBuilder(seriesResponse.PosterPath);
         foreach (var season in seriesResponse.Seasons)

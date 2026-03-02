@@ -1,0 +1,11 @@
+@model TvTracker.Models.View.MediaView
+
+<div class="media-banner">
+    <img src="@Model.PosterUrl" alt="" />
+    <div class="media-title">
+        <h2>@Model.Title</h2>
+        <h5 class="release-date">@(Model.ReleaseDate?.Year)</h5>
+    </div>
+
+    <partial name="_MediaControls" model="Model" />
+</div>
