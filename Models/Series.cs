@@ -38,12 +38,20 @@ public class Series : Media
         }
     }
 
-    public static Series Create(SeriesDetailsResponse dto, Func<string,string> imageUrlBuilder) 
+    public static Series Create(SeriesDetailsResponse dto, Func<string,string> imageUrlBuilder,Dictionary<int,int> seasonRunTimes) 
     {   
         var imageUrl = dto.PosterPath != null ? imageUrlBuilder(dto.PosterPath) : null;
         DateTime? releaseDate = dto.ReleaseDate != null ? DateTime.Parse(dto.ReleaseDate) : default(DateTime?);
         var info = new MediaMetaInfo(dto.Title,imageUrl,dto.Language,releaseDate);
         var status = StatusMapper.ToDomain(dto.Status);
-        return new Series(dto.Id,info,status);
+        var series = new Series(dto.Id,info,status);
+        foreach (var seasonResponse in dto.Seasons)
+        {
+            var runtime = seasonRunTimes.GetValueOrDefault(seasonResponse.SeasonNumber);
+            var season = Season.Create(seasonResponse,runtime);
+            Console.WriteLine(season.EpisodeLength);
+            series.AddSeason(season);
+        }
+        return series;
     }
 }

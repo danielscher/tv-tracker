@@ -18,8 +18,9 @@ public class DetailsModel: PageModel
 
     // public Movie? Movie {get; set;}
     public MovieView? MovieView {get;private set;}
+
+    public List<MediaView> MovieCollection {get; private set;} = [];
     public UserMediaInfo? UserMediaInfo {get;private set;}
-    public List<CastMember> Cast {get; private set;} = [];
 
 
     public DetailsModel(UserMediaService userMediaService, MediaService<Movie> movieService, ProfileService profileService, TmdbService tmdbService)
@@ -39,6 +40,18 @@ public class DetailsModel: PageModel
         {
             return NotFound();
         }
+
+        if (response!.CollectionInfo!=null)
+        {
+            MovieCollection = (await _tmdbService.GetMovieCollection(response.CollectionInfo.Id)).Where(x => x.Id != tmdbId).Select(x=>
+            {
+                var posterUrl = x.PosterPath != null ? _tmdbService.PosterUrlBuilder(x.PosterPath) : null;
+                DateTime? releaseDate = x.ReleaseDate != null ? DateTime.Parse(x.ReleaseDate) : null;
+                return new MediaView(x.Id,MediaType.Movie,x.Title,posterUrl,releaseDate,null,null,null);
+                
+            }).ToList();  
+        }
+
 
         var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
         UserMediaInfo = (await _userMediaService
@@ -68,6 +81,16 @@ public class DetailsModel: PageModel
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
         .UpdateWatchStatus<UserMovie>(profileId,UserMediaInfo.UserMediaId,WatchStatus.WantToWatch))
+        .Flatten();
+        return new JsonResult( new {status = UserMediaInfo.Status});
+    }
+
+    public async Task<IActionResult> OnPostMarkAsWatched(int tmdbId)
+    {   
+        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
+        UserMediaInfo = (await _userMediaService
+        .UpdateWatchStatus<UserMovie>(profileId,UserMediaInfo.UserMediaId,WatchStatus.Watched))
         .Flatten();
         return new JsonResult( new {status = UserMediaInfo.Status});
     }

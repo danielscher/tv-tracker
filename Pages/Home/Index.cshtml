@@ -6,18 +6,35 @@
 
 <div class="main-container">
 
+    <h1>Hello, @Model.ProfileName</h1>
+
+    <div>
+        <label>Movies Watched:</label>
+        <span>@Model.MoviesCount</span>
+        <label>Watch time:</label>
+        <span>@TimeFormatting.FormatMinutes(Model.MoviesWatchTime)</span>
+    </div>
+
+    <div>
+        <label>Shows Watched:</label>
+        <span>@Model.SeriesCount</span>
+        <label>Watch time:</label>
+        <span>@TimeFormatting.FormatMinutes(Model.SeriesWatchTime)</span>
+
+    </div>
+
     <h3>Recently Watched</h3>
 
-    <div class="recently-watched-container">
-            @foreach(var um in Model.UserMovies) 
+    <div class="card-container">
+            @foreach(var recentMedia in Model.RecentlyWatched) 
             {
                 <div class="media-card">
-                    @if(@um.Movie.MediaInfo.PosterPath != null) {
-                        <img src="@um.Movie.MediaInfo.PosterPath" alt="@um.Movie.MediaInfo.Title" />
+                    @if(recentMedia.PosterUrl != null) {
+                        <img src="@recentMedia.PosterUrl" alt="@recentMedia.Title" />
                     }
-                    @if(um.Rating != null){
+                    @if(recentMedia.Rating != null){
                         <span class="media-rating">
-                            @um.Rating
+                            @recentMedia.Rating
                         </span>
                     }
                 </div>

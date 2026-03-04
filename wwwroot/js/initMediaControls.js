@@ -5,6 +5,7 @@ export function initMediaControls(antiForgeryToken) {
     const tmdbId = document.getElementById("media-controls").dataset.tmdbId;
     initRateButtons(tmdbId,antiForgeryToken);
     initWatchLaterButton(tmdbId,antiForgeryToken);
+    initMarkAsWatchedButton(tmdbId, antiForgeryToken);
 }
 
 /**
@@ -143,4 +144,16 @@ function initWatchLaterButton(tmdbId, token) {
         }
         watchButton.appendChild(img);
     });
+}
+
+/** Performs a POST request to mark media with the argued id as watched. */
+function initMarkAsWatchedButton(tmdbId,token) {
+    const watchedButton = document.getElementById("mark-as-watched");
+    watchedButton.addEventListener("click", async ()=> {
+        const response = await fetch(`?handler=MarkAsWatched&tmdbId=${tmdbId}`, {
+            method: "POST",
+            headers : {"RequestVerificationToken":token}
+        });
+    })
+    // todo: update button appearance.
 }

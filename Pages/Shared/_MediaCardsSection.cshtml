@@ -11,12 +11,17 @@
         <div class="card-container">
             @foreach(var mediaView in Model.MediaViews) 
             {
-                <a asp-page="/Movies/Details" asp-route-tmdbId="@mediaView.TmdbId">
+                <a asp-page="@Model.RedirectUrl" asp-route-tmdbId="@mediaView.TmdbId">
                     <div class="media-card">
                         <img src=@mediaView.PosterUrl alt="@mediaView.Title" />
-                        <span class="media-rating">
-                            @mediaView.Rating
-                        </span>
+                        @if(mediaView.Rating != null) {
+                            <span class="media-rating">
+                                @mediaView.Rating
+                            </span>
+                        }
+                        @if(mediaView.ReleaseDate?.CompareTo(DateTime.Now) > 0) {
+                            <span class="coming-soon">Coming soon</span>
+                        }
                     </div>
                 </a>
             }

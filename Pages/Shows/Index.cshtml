@@ -22,11 +22,11 @@
 
         <div class="user-media-container" id="user-media-content">
         <partial name="_MediaCardsSection" 
-         model="@(new MediaCardsSectionView("Watch Later",Model.WatchList))" 
+         model="@(new MediaCardsSectionView("Watch Later","/Shows/Details", Model.WatchList))" 
         />
 
         <partial name="_MediaCardsSection" 
-         model="@(new MediaCardsSectionView("History",Model.WatchList))" 
+         model="@(new MediaCardsSectionView("History","/Shows/Details",Model.AlreadyWatch))" 
         />
 
             @* @if(Model.WatchList.Count != 0) { 

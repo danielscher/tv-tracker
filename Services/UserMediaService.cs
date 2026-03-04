@@ -128,6 +128,41 @@ public class UserMediaService(TvTrackerContext context)
     public Task<List<UserSeries>> GetUserSeriesAlreadyWatchedList(int profileId) => GetUserMediaList<UserSeries>(profileId,WatchStatus.Watched);
 
     /// <summary>
+    /// Retrieves all watched media ordered by watch date.
+    /// </summary>
+    public Task<List<UserMedia>> GetWatchedMedia(int profileId)
+    {
+        return _context.UserMedia
+        .Where(x=> x.ProfileId == profileId && x.Status.Equals(WatchStatus.Watched))
+        .OrderBy(x=>x.WatchedAt)
+        .ToListAsync();
+    }
+
+    public Task<int> GetTotalMediaCount<T>(int profileId) where T: UserMedia 
+    {
+        return _context.UserMedia.OfType<T>().Where(x => x.ProfileId == profileId).CountAsync();
+    }
+
+    public int GetTotalMovieWatchTime(int profileId)
+    {
+        return _context.UserMedia
+            .OfType<UserMovie>()
+            .Where(x => x.ProfileId == profileId)
+            .Sum(x => x.Movie.Length);
+    }
+
+    public int GetTotalSeriesWatchTime(int profileId)
+    {
+        return _context.UserMedia
+            .OfType<UserSeries>()
+            .Where(x => x.ProfileId == profileId)
+            .SelectMany(x => x.Series.Seasons)
+            .Sum(season => season.EpisodeLength * season.Episodes);
+    }
+
+
+
+    /// <summary>
     /// Fetches the subclass of UserMedia Data of a certain profile. 
     /// </summary>
     /// <typeparam name="T">The derived type of UserMedia </typeparam>

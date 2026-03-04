@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using TvTracker.Exception;
+using TvTracker.Models;
 using TvTracker.Models.DTOs;
 using TvTracker.Models.View;
 
@@ -95,6 +96,40 @@ public class TmdbService
         return await GetOrCreateCacheEntry(cacheKey,()=> MakeRequestAndParse<SeriesDetailsResponse>(movieURL),20);
     }
 
+    /// <summary>
+    /// performs request to fetch season details of series and aggregate the episode runtime.
+    /// each request is performed in parallel.
+    /// </summary>
+    /// <param name="seasonCount"> the total number of seasons (including specials) </param>
+    /// <returns></returns>
+    public async Task<Dictionary<int,int>> GetSeriesSeasonRuntime(int tmdbSeriesId,int seasonCount)
+    {
+        Dictionary<int,int> seasonToRuntime = [];
+
+        // skip specials (start from seasonNum = 1)
+        var tasks = Enumerable.Range(1, seasonCount).Select( async seasonNumber =>
+        {
+            var seasonUrl = BuildUrl($"tv/{tmdbSeriesId}/season/{seasonNumber}", new() {});
+            var seasonResponse = await MakeRequestAndParse<SeasonDetailsResponse>(seasonUrl);
+            var runtime = seasonResponse?.Episodes.Sum(x => x.Runtime);
+            return (SeasonNumber : seasonNumber, Runtime: runtime ?? 0);
+        }).ToArray();
+        
+        var results = await Task.WhenAll(tasks);
+        return results.ToDictionary(x=> x.SeasonNumber, x=>x.Runtime);
+    }
+
+    public async Task<ICollection<CollectionEntry>> GetMovieCollection(int tmdbCollectionId)
+    {
+        var collectionsUrl = BuildUrl($"collection/{tmdbCollectionId}", new (){});
+
+        var cacheKey = $"collections:{tmdbCollectionId}";
+        var collection = await GetOrCreateCacheEntry(cacheKey, () => MakeRequestAndParse<CollectionResponse>(collectionsUrl),20) 
+        ?? throw new NotFoundException($"Failed to find Collection with id {tmdbCollectionId}");
+
+        return collection.Entries;
+    }
+
     private string BuildUrl(string path, Dictionary<string, string?> queryParams)
     {
         queryParams["api_key"] = _options.ApiKey;
@@ -112,6 +147,8 @@ public class TmdbService
     {
         var response = await _client.GetAsync(url);
         response.EnsureSuccessStatusCode();
+        var json = await response.Content.ReadAsStringAsync();
+        Console.WriteLine(json);   // simplest
         return await response.Content.ReadFromJsonAsync<T>();
     }
 

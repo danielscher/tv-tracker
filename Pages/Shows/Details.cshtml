@@ -22,14 +22,14 @@
         />
     }   
 
-    <partial name="_MediaCastCards" model="@Model.SeriesView?.Cast" />
+    <partial name="_MediaCastSection" model="@Model.SeriesView?.Cast" />
+
 
     <div class="seasons-container">
         <h3>Seasons</h3>
-        <div class ="cards-container">
-        @foreach(var season in Model.SeriesView.Seasons) {
+        <div class ="card-container">
+        @foreach(var season in Model.SeriesView?.Seasons) {
             <div class="season-card">
-                @* <div class="placeholder-poster"></div> *@
                 <img src= @season.PosterUrl/>
                 <span>@season.Title</span>
                 <span class="episode-num">@season.EpisodeCount episodes</span>

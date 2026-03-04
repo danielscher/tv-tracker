@@ -1,3 +1,5 @@
+using TvTracker.Models.DTOs;
+
 namespace TvTracker.Models;
 
 public class Season(int seasonNumber, int episodes, int episodeLength, DateTime? releaseDate)
@@ -28,4 +30,10 @@ public class Season(int seasonNumber, int episodes, int episodeLength, DateTime?
     public int EpisodeLength{get;} = episodeLength;
 
     public DateTime? ReleaseDate {get;}= releaseDate;
+
+    public static Season Create(SeasonResponse response,int episodeLength)
+    {
+        DateTime? releaseDate = response.ReleaseDate != null ? DateTime.Parse(response.ReleaseDate) : null;
+        return new (response.SeasonNumber,response.EpisodeCount,episodeLength,releaseDate);
+    }
 }

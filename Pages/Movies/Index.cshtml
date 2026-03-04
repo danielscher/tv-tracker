@@ -20,11 +20,11 @@
 
     <div class="user-media-container" id="user-media-content">
         <partial name="_MediaCardsSection" 
-         model="@(new MediaCardsSectionView("Watch Later",Model.WatchList))" 
+         model="@(new MediaCardsSectionView("Watch Later","/Movies/Details",Model.WatchList))" 
         />
 
         <partial name="_MediaCardsSection" 
-         model="@(new MediaCardsSectionView("History",Model.AlreadyWatch))" 
+         model="@(new MediaCardsSectionView("History","/Movies/Details",Model.AlreadyWatch))" 
         />
     </div>
 </div>

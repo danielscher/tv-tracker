@@ -22,25 +22,13 @@
         />
     }   
 
-    <div class="cast-container">
-        <h3>Cast</h3>
+    <partial name="_MediaCastSection" 
+        model="@Model.MovieView?.Cast" 
+    />
 
-        <div class="cards-container">  
-            @foreach(var member in Model.MovieView?.Cast) {
-                <div class="cast-card">
-                    @if(member.PosterPath != null) {
-                        <img src=@member.PosterPath/>
-                        
-                    } else {
-                        <div class="placeholder-poster"></div>
-                    }
-                    <span>@member.CharacterName</span>
-                    <span>@member.ActorName</span>
-                </div>
-            }
-        </div>
-
-    </div>
+    <partial name="_MediaCardsSection" 
+        model="@(new MediaCardsSectionView("Related","/Movies/Details",Model.MovieCollection))" 
+    />
 
 </div>
 

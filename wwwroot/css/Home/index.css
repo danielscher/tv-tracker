@@ -40,10 +40,11 @@
     display: inline-block;
 }
 
-.cards-container {
+.card-container {
     display: flex;
     flex-direction: row;
     gap: 0 10px;
+    overflow-x: auto;
 }
 
 .cast-card {

@@ -55,6 +55,16 @@ public class DetailsModel: PageModel
         return new JsonResult( new {status = UserMediaInfo.Status});
     }
 
+    public async Task<IActionResult> OnPostMarkAsWatched(int tmdbId)
+    {   
+        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
+        UserMediaInfo = (await _userMediaService
+        .UpdateWatchStatus<UserSeries>(profileId,UserMediaInfo.UserMediaId,WatchStatus.Watched))
+        .Flatten();
+        return new JsonResult( new {status = UserMediaInfo.Status});
+    }
+
     public async Task<IActionResult> OnPostRate(int tmdbId, int? rating) 
     {
         var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
@@ -77,7 +87,8 @@ public class DetailsModel: PageModel
 
         // otherwise create new
         var dto = await _tmdbService.GetSeriesDetails(tmdbId);
-        var series = Series.Create(dto!,_tmdbService.PosterUrlBuilder);
+        var seasonRuntimes = await _tmdbService.GetSeriesSeasonRuntime(tmdbId,dto!.NumberOfSeasons);
+        var series = Series.Create(dto!,_tmdbService.PosterUrlBuilder,seasonRuntimes);
         series = await _seriesService.PersistMedia(series);
 
         var profile = await _profileService.FetchProfile(profileId);

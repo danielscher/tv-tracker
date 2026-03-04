@@ -14,9 +14,6 @@ public record SeriesDetailsResponse(
     [property: JsonPropertyName("seasons")] ICollection<SeasonResponse> Seasons,
     [property: JsonPropertyName("status")] string Status,
 
-
-
-
     // with append_to_response
     [property: JsonPropertyName("credits")] CreditsResponse Credits
 );
