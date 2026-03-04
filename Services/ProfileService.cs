@@ -107,5 +107,10 @@ public class ProfileService(TvTrackerContext context)
         response.Cookies.Delete("SelectedProfileId");
     }
 
+    public void SwitchProfile(HttpResponse response, int profileId)
+    {
+        UnauthorizeProfile(response);
+        AuthorizeProfile(response,profileId);
+    }
 
 }

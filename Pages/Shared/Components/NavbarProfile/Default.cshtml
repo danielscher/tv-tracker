@@ -1,0 +1,23 @@
+@model NavbarProfileView
+
+<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+    <div>  
+        @* "@Model.Profiles.FirstOrDefault(p => p.Id == Model.ActiveProfileId)?.Name" *@
+        TEST
+    </div>
+</a>
+
+<ul class="dropdown-menu dropdown-menu-end">
+    @foreach(var profile in Model.Profiles)
+    {
+        <li>
+            <form method="post" asp-page="/Profiles/Switch">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="newProfileId" value="@profile.Id" />
+                <button type="submit" class="dropdown-item">
+                    @profile.Name
+                </button>
+            </form>
+        </li>
+    }
+</ul>
