@@ -9,9 +9,7 @@ public class SwitchModel(ProfileService service) : PageModel
     private ProfileService _service = service;
     public IActionResult OnPost(int newProfileId)
     {
-        Console.WriteLine("switched");
         _service.SwitchProfile(Response, newProfileId);
-        // return RedirectToPage("/Privacy");
 
         // Redirect back to previous page
         var referer = Request.Headers["Referer"].ToString();

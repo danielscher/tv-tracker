@@ -1,23 +1,42 @@
 @model NavbarProfileView
 
-<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-    <div>  
-        @* "@Model.Profiles.FirstOrDefault(p => p.Id == Model.ActiveProfileId)?.Name" *@
-        TEST
-    </div>
-</a>
+@{
+    var selectedProfile = Model.Profiles.FirstOrDefault(p => p.Id == Model.ActiveProfileId);
+}
 
-<ul class="dropdown-menu dropdown-menu-end">
+<div class="profile-dropdown-container">
+  <a class="profile-edit-btn" asp-page="/Profiles/Manage" asp-route-id="@selectedProfile?.Id">
+      <img src="/assets/icons/pen-solid-full.svg"  class="hover-overlay"/>
+      <img src="@selectedProfile?.AvatarPath" width="40" height="40" />
+  </a>
+  <button class="dropdown-toggle" onclick="toggleDropdown()"></button>
+  <div class="profile-dropdown">
     @foreach(var profile in Model.Profiles)
     {
-        <li>
+        <div>
             <form method="post" asp-page="/Profiles/Switch">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="newProfileId" value="@profile.Id" />
                 <button type="submit" class="dropdown-item">
-                    @profile.Name
+                    <img src="@profile.AvatarPath" width="30" height="30">
+                    <span>@profile.Name</span>
                 </button>
             </form>
-        </li>
+        </div>
     }
-</ul>
+  </div>
+</div>
+
+<script>
+function toggleDropdown() {
+    const menu = document.querySelector('.profile-dropdown');
+    menu.classList.toggle('show');
+}
+
+window.addEventListener('click', function(e) {
+    const dropdown = document.querySelector('.profile-dropdown');
+    if (!dropdown.contains(e.target)) {
+        dropdown.querySelector('.profile-menu')?.classList.remove('show');
+    }
+});
+</script>

@@ -1,0 +1,87 @@
+@page "{id?}"
+@model TvTracker.Pages.Profiles.CreateModel
+@{
+    ViewData["Title"] = "Create Profile";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Home/index.css" asp-append-version="true" />
+}
+
+@{
+    var creationMode = Model.Profile == null;
+}
+
+<div class="profile-creation-main">
+@if(creationMode) {
+    <h2>Create new Profile</h2>
+} else {
+    <h2>Edit Profile</h2>
+}
+
+<form method="post" asp-page-handler="@(!creationMode ? "Update" : null)" class="profile-creation-container">
+    <div class="">
+
+        <div class="avatar-picker">
+
+            @{
+                var avatarPath = Model.Profile?.AvatarPath ?? "/assets/avatars/food.svg";
+            }
+            <img id="selectedAvatar"
+                 src=@avatarPath
+                 class="avatar-selected"
+                 onclick="toggleAvatarMenu()" />
+
+            <input type="hidden" id="imgUrl" name="imgUrl" value=@avatarPath />
+
+            <div id="avatarMenu" class="avatar-menu">
+
+                <img src="/assets/avatars/food.svg"
+                     onclick="selectAvatar('/assets/avatars/food.svg')" />
+
+                <img src="/assets/avatars/alien.svg"
+                     onclick="selectAvatar('/assets/avatars/alien.svg')" />
+
+                <img src="/assets/avatars/cat.svg"
+                     onclick="selectAvatar('/assets/avatars/cat.svg')" />
+
+                <img src="/assets/avatars/lady.svg"
+                     onclick="selectAvatar('/assets/avatars/lady.svg')" />
+
+                <img src="/assets/avatars/ninja.svg"
+                     onclick="selectAvatar('/assets/avatars/ninja.svg')" />
+
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-name-input-container">
+        <div class="form-group">
+            <label for="name">Profile Name</label>
+            <input type="text" id="name" name="name" class="form-control" value="@Model.Profile?.Name" />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">
+             @if(creationMode) {
+                <span>Create</span>
+             }else {
+                <span>Edit</span>
+             }
+        </button>
+        <a asp-page="/Index" class="btn btn-secondary mt-2">Cancel</a>
+    </div>
+
+</form>
+</div>
+
+<script>
+function toggleAvatarMenu() {
+    const menu = document.getElementById("avatarMenu");
+    menu.style.display = menu.style.display === "flex" ? "none" : "flex";
+}
+
+function selectAvatar(url) {
+    document.getElementById("selectedAvatar").src = url;
+    document.getElementById("imgUrl").value = url;
+    document.getElementById("avatarMenu").style.display = "none";
+}
+</script>

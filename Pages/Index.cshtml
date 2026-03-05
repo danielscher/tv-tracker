@@ -4,6 +4,7 @@
 @{
     ViewData["Title"] = "Home";
 }
+
 <div class="main-container">
     <div class="text-center">
         <h1 class="display-4">Welcome</h1>
@@ -14,13 +15,16 @@
         {
                 <form method="post" asp-page-handler="Select">
                     <input type="hidden" name="profileId" value="@profile.Id" />
-                    <button type="submit" class="profile">@profile.Name</button>
+                    <button type="submit" class="profile">
+                        <img class="profileSelectionImage" src=@profile.AvatarPath />
+                    </button>
                 </form>
         }
         @if (Model.Profiles.Count < 4){
-            <div class="new-profile">
-                <a asp-page="/Profiles/Create" class="btn btn-outline-primary">New profile</a>
-            </div>
+
+            <a class="new-profile asp-page="/Profiles/Manage">
+                New Profile
+            </a>
         }
     </div>
 </div>

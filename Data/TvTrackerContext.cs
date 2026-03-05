@@ -162,12 +162,13 @@ public class TvTrackerContext(DbContextOptions<TvTrackerContext> options) : DbCo
     {
         builder.Property(x => x.Id);
         builder.Property(x => x.Name).HasMaxLength(20);
+        builder.Property(x=> x.AvatarPath);
     }
 
     public static void SeedData(DbContext context)
     {
         // Profiles
-        var testProfile = new Profile("test");
+        var testProfile = new Profile("test","/assets/avatars/food.svg");
         context.Set<Profile>().Add(testProfile);
 
         // Actors

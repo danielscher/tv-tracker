@@ -53,10 +53,11 @@ public class ProfileService(TvTrackerContext context)
     /// <param name="profileId"> the id of the profile to update </param>
     /// <param name="newName"></param>
     /// <returns>updated profile</returns>
-    public async Task<Profile> UpdateProfile(int profileId,string newName)
+    public async Task<Profile> UpdateProfile(int profileId,string newName,string newAvatarPath)
     {
         var profile = await FetchProfile(profileId);
         profile.Name = newName;
+        profile.AvatarPath = newAvatarPath;
         await _context.SaveChangesAsync();
         return profile;
     }
@@ -68,14 +69,14 @@ public class ProfileService(TvTrackerContext context)
     /// <param name="name"></param>
     /// <returns></returns>
     /// <exception cref="InvalidOperationException"> is thrown if 4 profiles already exist </exception>
-    public async Task<Profile> CreateProfile(string name)
+    public async Task<Profile> CreateProfile(string name,string avatarPath)
     {
         if (await _context.Profiles.CountAsync() >= 4)
         {
             throw new InvalidOperationException("Cannot create more than 4 profiles.");
         }
         var normalizedName = name.Trim();
-        var profile = new Profile(normalizedName);
+        var profile = new Profile(normalizedName,avatarPath);
         _context.Profiles.Add(profile);
         await _context.SaveChangesAsync();
         return profile;

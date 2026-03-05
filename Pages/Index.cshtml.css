@@ -10,14 +10,34 @@
     justify-content: center;
 }
 
+.profile-container a {
+    text-decoration: unset;
+}
+
 .profile,
 .new-profile{
-    text-align: center;     /* horizontal */
-    align-content: center;  /* vertical */
+    border: 0;
+    padding: 0;
+    text-align: center;
+    align-content: center;
     width: 10vw;
     height: 10vw;
-    border: 2px solid black;
-    background-color: gray;
+    background-color: unset;
+}
+
+.new-profile {
+    border: 1px rgb(0, 102, 255) solid;
+    font-size: larger;
+}
+
+.new-profile:hover {
+    color: white;
+    background-color: rgb(0, 102, 255);
+    text-decoration: unset;
+}
+
+.profile > img {
+    width: 100%;
 }
 
 @media (max-width: 768px) {

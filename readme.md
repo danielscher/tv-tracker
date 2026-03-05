@@ -34,3 +34,9 @@ Then run the app via:
 ```
 dotnet run
 ```
+
+## Credits
+
+Vector art used in this project:
+
+- "[Smiley Emoji Circular Vectors](https://www.svgrepo.com/collection/smiley-emoji-circular-vectors/)" by Iconperk – CC BY 4.0
