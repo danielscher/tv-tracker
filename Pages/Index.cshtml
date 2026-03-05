@@ -22,8 +22,10 @@
         }
         @if (Model.Profiles.Count < 4){
 
-            <a class="new-profile asp-page="/Profiles/Manage">
-                New Profile
+            <a asp-page="/Profiles/Manage">
+                <div class=new-profile>
+                    New Profile
+                </div>
             </a>
         }
     </div>
