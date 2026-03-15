@@ -35,7 +35,7 @@ public class DetailsModel: PageModel
 
         if (SeriesView is null) { return NotFound();}
 
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo = (await _userMediaService.GetUserMediaByProfileIdAndTmdbIdOptional(profileId,tmdbId))?.Flatten() ?? null;
 
         return Page();
@@ -47,7 +47,7 @@ public class DetailsModel: PageModel
     /// <returns></returns>
     public async Task<IActionResult> OnPostToggleWatchLater(int tmdbId)
     {   
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
         .UpdateWatchStatus<UserSeries>(profileId,UserMediaInfo.UserMediaId,WatchStatus.WantToWatch))
@@ -57,7 +57,7 @@ public class DetailsModel: PageModel
 
     public async Task<IActionResult> OnPostMarkAsWatched(int tmdbId)
     {   
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
         .UpdateWatchStatus<UserSeries>(profileId,UserMediaInfo.UserMediaId,WatchStatus.Watched))
@@ -67,7 +67,7 @@ public class DetailsModel: PageModel
 
     public async Task<IActionResult> OnPostRate(int tmdbId, int? rating) 
     {
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
         .RateUserMedia(profileId,UserMediaInfo.UserMediaId,rating))

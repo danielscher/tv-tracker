@@ -24,7 +24,7 @@ public class ShowsModel: PageModel
 
     public async Task OnGet()
     {
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         WatchList = (await _userMediaService.GetUserSeriesWatchList(profileId)).Select(x=>x.ToView()).ToList();
         AlreadyWatch = (await _userMediaService.GetUserSeriesAlreadyWatchedList(profileId)).Select(x=>x.ToView()).ToList();
     }

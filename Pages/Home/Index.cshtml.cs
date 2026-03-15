@@ -33,7 +33,7 @@ public class HomeModel: PageModel
 
     public async Task OnGet()
     {
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         ProfileName = (await _profileService.FetchProfile(profileId)).Name;
         
         RecentlyWatched = (await _userMediaService.GetWatchedMedia(profileId)).Select(x=>x.ToView()).ToList();

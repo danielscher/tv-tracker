@@ -26,7 +26,7 @@ public class MoviesModel: PageModel
 
     public async Task OnGet()
     {
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         WatchList = (await _userMediaService.GetUserMovieWatchList(profileId)).Select(x=>x.ToView()).ToList();
         AlreadyWatch = (await _userMediaService.GetUserMovieAlreadyWatchedList(profileId)).Select(x=>x.ToView()).ToList();
     }

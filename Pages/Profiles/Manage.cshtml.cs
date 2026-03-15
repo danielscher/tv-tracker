@@ -39,7 +39,7 @@ namespace TvTracker.Pages.Profiles
 
         public async Task<IActionResult> OnPostUpdateAsync(string name,string imgUrl)
         {
-            var profileId = CookieUtils.ExtractProfileIdFromCookie(Request); 
+            var profileId = CookieUtils.GetProfileId(Request); 
             
             if (string.IsNullOrWhiteSpace(name))
             {

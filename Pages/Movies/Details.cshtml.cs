@@ -53,7 +53,7 @@ public class DetailsModel: PageModel
         }
 
 
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo = (await _userMediaService
         .GetUserMediaByProfileIdAndTmdbIdOptional(profileId,tmdbId))?
         .Flatten() ?? null;
@@ -63,7 +63,7 @@ public class DetailsModel: PageModel
 
      public async Task<IActionResult> OnPostRate(int tmdbId, int? rating) 
     {
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
         .RateUserMedia(profileId,UserMediaInfo.UserMediaId,rating))
@@ -77,7 +77,7 @@ public class DetailsModel: PageModel
     /// <returns></returns>
     public async Task<IActionResult> OnPostToggleWatchLater(int tmdbId)
     {   
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
         .UpdateWatchStatus<UserMovie>(profileId,UserMediaInfo.UserMediaId,WatchStatus.WantToWatch))
@@ -87,12 +87,12 @@ public class DetailsModel: PageModel
 
     public async Task<IActionResult> OnPostMarkAsWatched(int tmdbId)
     {   
-        var profileId = CookieUtils.ExtractProfileIdFromCookie(Request);
+        var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
         .UpdateWatchStatus<UserMovie>(profileId,UserMediaInfo.UserMediaId,WatchStatus.Watched))
         .Flatten();
-        return new JsonResult( new {status = UserMediaInfo.Status});
+        return new JsonResult( new {watchedAt = UserMediaInfo.WatchDate?.ToString("dd/MM/yy")});
     }
 
     private async Task<UserMediaInfo> FetchOrCreateUserMedia(int tmdbId, int profileId)

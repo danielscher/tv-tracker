@@ -28,52 +28,6 @@
         <partial name="_MediaCardsSection" 
          model="@(new MediaCardsSectionView("History","/Shows/Details",Model.AlreadyWatch))" 
         />
-
-            @* @if(Model.WatchList.Count != 0) { 
-                <div class="recently-watched-container">
-
-                    <h3>Watch List</h3>
-
-                    <div class="card-container">
-                        @foreach(var um in Model.WatchList) 
-                        {   
-                           <a asp-page="/Shows/Details" asp-route-tmdbId="@um.TmdbId">  
-                                <div class="media-card">
-                                    @if(um.MediaPosterPath != null) {
-                                        <img src=@um.MediaPosterPath alt="@um.MediaTitle" />
-                                    }
-                                    <span class="media-rating">
-                                        @um.Rating
-                                    </span>
-                                </div>
-                            </a>
-                        }
-                    </div>
-                </div>
-            }
-
-            @if(Model.AlreadyWatch.Count != 0) {
-                <div class="recently-watched-container">
-
-                    <h3>Recently Watched</h3>
-
-                    <div class="card-container">
-                        @foreach(var um in Model.AlreadyWatch) 
-                        {
-                           <a asp-page="/Shows/Details" asp-route-tmdbId="@um.TmdbId">  
-                                <div class="media-card">
-                                    @if(um.MediaPosterPath != null) {
-                                        <img src=@um.MediaPosterPath alt="@um.MediaTitle" />
-                                    }
-                                    <span class="media-rating">
-                                        @um.Rating
-                                    </span>
-                                </div>
-                            </a>
-                        }
-                    </div>
-                </div>
-            } *@
         </div>
 </div>
 
