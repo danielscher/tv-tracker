@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using TvTracker.Exception;
 using TvTracker.Models;
 using TvTracker.Models.DTOs;
+using TvTracker.Models.Enums;
 using TvTracker.Models.View;
 
 public class TmdbService
@@ -72,6 +73,102 @@ public class TmdbService
                     PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
                 }).ToList() ?? [];
         return mapped;
+    }
+
+    public async Task<ICollection<SearchResponseView>> GetTrendingMovies()
+    {
+        var url =  BuildUrl("trending/movie/week", new ()
+        {
+            ["language"] = "en-US"
+        });
+        
+        var cacheKey = "movie:trending";
+        var result = await GetOrCreateCacheEntry(cacheKey, ()=> MakeRequestAndParse<SearchWrapperResponse<MovieSearchResponse>>(url),60);
+        return result?.Results.Select(x => 
+            new SearchResponseView
+            {
+                TmdbId = x.TmdbId,
+                Title= x.Title,
+                PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
+            }
+            ).ToList() ?? [];
+    }
+
+    public async Task<ICollection<SearchResponseView>> GetUpcomingMovies()
+    {
+        var url =  BuildUrl("movie/upcoming", new ()
+        {
+            ["language"] = "en-US",
+            ["region"] = "DE"
+        });
+        
+        var cacheKey = "movie:upcoming";
+        var result = await GetOrCreateCacheEntry(cacheKey, ()=> MakeRequestAndParse<SearchWrapperResponse<MovieSearchResponse>>(url),60);
+        return result?.Results.Where(x=> x.ReleaseDate != null ? DateTime.Parse(x.ReleaseDate) > DateTime.Today : false ).Select(x => 
+            new SearchResponseView
+            {
+                TmdbId = x.TmdbId,
+                Title= x.Title,
+                PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
+            }
+            ).ToList() ?? [];
+    }
+
+    public async Task<ICollection<SearchResponseView>> GetInTheaters()
+    {
+        var url =  BuildUrl("movie/now_playing", new ()
+        {
+            ["language"] = "en-US"
+        });
+        
+        var cacheKey = "movie:in_theaters";
+        var result = await GetOrCreateCacheEntry(cacheKey, ()=> MakeRequestAndParse<SearchWrapperResponse<MovieSearchResponse>>(url),60);
+        return result?.Results.Select(x => 
+            new SearchResponseView
+            {
+                TmdbId = x.TmdbId,
+                Title= x.Title,
+                PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
+            }
+            ).ToList() ?? [];
+    }
+
+    public async Task<ICollection<SearchResponseView>> GetTrendingSeries()
+    {
+        var url =  BuildUrl("trending/tv/week", new ()
+        {
+            ["language"] = "en-US"
+        });
+        
+        var cacheKey = "tv:trending";
+        var result = await GetOrCreateCacheEntry(cacheKey, ()=> MakeRequestAndParse<SearchWrapperResponse<SeriesSearchResponse>>(url),60);
+        return result?.Results.Select(x => 
+            new SearchResponseView
+            {
+                TmdbId = x.TmdbId,
+                Title= x.Title,
+                PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
+            }
+            ).ToList() ?? [];
+    }
+
+        public async Task<ICollection<SearchResponseView>> GetUpcomingEpisodes()
+    {
+        var url =  BuildUrl("tv/on_the_air", new ()
+        {
+            ["language"] = "en-US"
+        });
+        
+        var cacheKey = "tv:upcoming";
+        var result = await GetOrCreateCacheEntry(cacheKey, ()=> MakeRequestAndParse<SearchWrapperResponse<SeriesSearchResponse>>(url),60);
+        return result?.Results.Select(x => 
+            new SearchResponseView
+            {
+                TmdbId = x.TmdbId,
+                Title= x.Title,
+                PosterUrl = x.PosterPath != null ? PosterUrlBuilder(x.PosterPath) : null,
+            }
+            ).ToList() ?? [];
     }
 
     public async Task<MovieDetailsResponse?> GetMovieDetails(int TmdbMovieId)
@@ -145,10 +242,9 @@ public class TmdbService
 
     private async Task<T?> MakeRequestAndParse<T>(string url)
     {
+        Console.WriteLine(url);
         var response = await _client.GetAsync(url);
         response.EnsureSuccessStatusCode();
-        var json = await response.Content.ReadAsStringAsync();
-        Console.WriteLine(json);   // simplest
         return await response.Content.ReadFromJsonAsync<T>();
     }
 

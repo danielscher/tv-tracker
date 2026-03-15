@@ -15,6 +15,8 @@ public class ShowsModel: PageModel
 
     public List<MediaView> WatchList {get; private set;}= [];
     public List<MediaView> AlreadyWatch {get; private set;} = [];
+    public List<MediaView> Trending {get; private set;} = [];
+    public List<MediaView> Upcoming {get; private set;} = [];
 
     public ShowsModel(UserMediaService userMediaService, TmdbService tmbdService)
     {
@@ -27,11 +29,24 @@ public class ShowsModel: PageModel
         var profileId = CookieUtils.GetProfileId(Request);
         WatchList = (await _userMediaService.GetUserSeriesWatchList(profileId)).Select(x=>x.ToView()).ToList();
         AlreadyWatch = (await _userMediaService.GetUserSeriesAlreadyWatchedList(profileId)).Select(x=>x.ToView()).ToList();
+        Trending = (await _tmdbService.GetTrendingSeries()).Select(MapToView).ToList(); 
+        Upcoming = (await _tmdbService.GetUpcomingEpisodes()).Select(MapToView).ToList();  
     }
 
     public async Task<IActionResult> OnPostSearchAsync([FromBody] string searchQuery)
     {
         var data = await _tmdbService.SearchSeries(searchQuery);
         return new JsonResult(data);
+    }
+
+        private MediaView MapToView(SearchResponseView response)
+    {
+        return new MediaView(
+                response.TmdbId,
+                Models.Enums.MediaType.Series,
+                response.Title!,
+                response.PosterUrl,
+                null,null,null, null
+            );
     }
 }

@@ -28,6 +28,14 @@
         <partial name="_MediaCardsSection" 
          model="@(new MediaCardsSectionView("History","/Shows/Details",Model.AlreadyWatch))" 
         />
+
+        <partial name="_MediaCardsSection"
+         model="@(new MediaCardsSectionView("Trending","/Shows/Details",Model.Trending))"
+        />
+
+        <partial name="_MediaCardsSection"
+         model="@(new MediaCardsSectionView("Upcoming","/Shows/Details",Model.Upcoming))"
+        />
         </div>
 </div>
 

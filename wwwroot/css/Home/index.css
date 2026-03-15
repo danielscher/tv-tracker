@@ -4,6 +4,12 @@
     gap: 1rem;
 }
 
+.user-media-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
 .media-card {
     display: flex;
     flex-direction: column;

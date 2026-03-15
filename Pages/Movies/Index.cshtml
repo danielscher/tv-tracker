@@ -26,6 +26,18 @@
         <partial name="_MediaCardsSection" 
          model="@(new MediaCardsSectionView("History","/Movies/Details",Model.AlreadyWatch))" 
         />
+
+        <partial name="_MediaCardsSection"
+         model="@(new MediaCardsSectionView("Trending","/Movies/Details",Model.Trending))"
+        />
+
+        <partial name="_MediaCardsSection"
+         model="@(new MediaCardsSectionView("Upcoming","/Movies/Details",Model.Upcoming))"
+        />
+
+        <partial name="_MediaCardsSection"
+         model="@(new MediaCardsSectionView("In Theaters","/Movies/Details",Model.InTheaters))"
+        />
     </div>
 </div>
 

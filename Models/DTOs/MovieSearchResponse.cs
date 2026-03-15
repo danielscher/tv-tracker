@@ -9,5 +9,6 @@ namespace TvTracker.Models.DTOs;
 public record MovieSearchResponse(
     [property: JsonPropertyName("id")] int TmdbId,
     [property: JsonPropertyName("original_title")] string? Title,
-    [property: JsonPropertyName("poster_path")] string? PosterPath
+    [property: JsonPropertyName("poster_path")] string? PosterPath,
+    [property: JsonPropertyName("release_date")] string? ReleaseDate
 );
