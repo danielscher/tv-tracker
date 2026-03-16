@@ -16,7 +16,8 @@
             Model.SeriesView.PosterUrl,
             Model.SeriesView.ReleaseDate,
             Model.UserMediaInfo?.Rating,
-            Model.UserMediaInfo?.Status,
+            Model.UserMediaInfo?.Watched ?? false,
+            Model.UserMediaInfo?.Saved ?? false,
             Model.UserMediaInfo?.WatchDate
         ))" 
         />

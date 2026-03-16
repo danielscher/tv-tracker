@@ -31,9 +31,8 @@ public abstract class UserMedia
     /// External TMDB API media id.
     /// </summary>
     public int TmdbId {get; protected set;}
-
-    public WatchStatus Status{get;private set;} = WatchStatus.None;
-
+    public bool Watched {get; private set;} = false;
+    public bool Saved {get; set;} = false;
     public int? Rating{get;set;}
 
     /// <summary>
@@ -46,18 +45,8 @@ public abstract class UserMedia
     /// </summary>
     public void Watch()
     {
-        Status = WatchStatus.Watched;
+        Watched = true;
         WatchedAt = DateTime.UtcNow;
-    }
-
-    /// <summary>
-    /// Toggles status between wantToWatch To None if not already watched.
-    /// otherwise does nothing.
-    /// </summary>
-    public void WantToWatch()
-    {
-        if (Status == WatchStatus.Watched) {return;}
-        Status = Status == WatchStatus.WantToWatch ? WatchStatus.None : WatchStatus.WantToWatch;   
     }
 
     protected UserMedia(Profile profile, Guid mediaId, int tmdbId)
@@ -75,8 +64,8 @@ public abstract class UserMedia
 
     public UserMediaInfo Flatten()
     {
-        return new UserMediaInfo(Id,Rating,Status,WatchedAt);
+        return new UserMediaInfo(Id,Rating,Watched,Saved,WatchedAt);
     }
-
+    
     public abstract MediaView ToView();
 }

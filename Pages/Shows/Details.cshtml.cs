@@ -50,9 +50,9 @@ public class DetailsModel: PageModel
         var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
-        .UpdateWatchStatus<UserSeries>(profileId,UserMediaInfo.UserMediaId,WatchStatus.WantToWatch))
+        .MarkAsSaved(profileId,UserMediaInfo.UserMediaId))
         .Flatten();
-        return new JsonResult( new {status = UserMediaInfo.Status});
+        return new JsonResult( new {saved = UserMediaInfo.Saved});
     }
 
     public async Task<IActionResult> OnPostMarkAsWatched(int tmdbId)
@@ -60,9 +60,10 @@ public class DetailsModel: PageModel
         var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
-        .UpdateWatchStatus<UserSeries>(profileId,UserMediaInfo.UserMediaId,WatchStatus.Watched))
+        .MarkAsWatched(profileId,UserMediaInfo.UserMediaId))
         .Flatten();
-        return new JsonResult( new {status = UserMediaInfo.Status});
+        return new JsonResult( new {watchedAt = UserMediaInfo.WatchDate?.ToString("dd/MM/yy")});
+
     }
 
     public async Task<IActionResult> OnPostRate(int tmdbId, int? rating) 

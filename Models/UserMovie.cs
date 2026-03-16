@@ -22,7 +22,8 @@ public class UserMovie : UserMedia
             Movie.MediaInfo.PosterPath,
             Movie.MediaInfo.ReleaseDate,
             Rating,
-            Status,
+            Watched,
+            Saved,
             WatchedAt
         );
     }

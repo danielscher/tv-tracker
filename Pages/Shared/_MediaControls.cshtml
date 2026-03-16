@@ -27,19 +27,21 @@
         </div>
     </div>
 
-    <button id="toggle-watch-later">
-        @if(Model.Status.Equals(WatchStatus.WantToWatch)) {
-            <img src="~/assets/icons/bookmark-full.svg" alt="">
+    <button id="toggle-watch-later" class="media-controls-button" data-active="@Model.Watched">
+        @if(Model.Watched) {
+            <img id="watch-later-btn-image" src="~/assets/icons/bookmark-full.svg" alt="">
         } else {
-            <img src="~/assets/icons/bookmark.svg" alt="">
+            <img id="watch-later-btn-image" src="~/assets/icons/bookmark.svg" alt="">
         }
+        <div id="watchlater-button-msg"></div>
+        
     </button>
 
-    <button id="mark-as-watched">
-        Mark
+    <button id="mark-as-watched" class="media-controls-button" data-watch-date="@Model.WatchDate?.ToString("dd/MM/yy")">
+        <img src="~/assets/icons/eye.svg" alt="">
+        <div id="watched-button-msg"></div>
     </button>
 
-    <span>@Model.WatchDate</span>
 </div>
 
 

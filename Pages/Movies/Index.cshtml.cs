@@ -32,8 +32,11 @@ public class MoviesModel: PageModel
     public async Task OnGet()
     {
         var profileId = CookieUtils.GetProfileId(Request);
-        WatchList = (await _userMediaService.GetUserMovieWatchList(profileId)).Select(x=>x.ToView()).ToList();
-        AlreadyWatch = (await _userMediaService.GetUserMovieAlreadyWatchedList(profileId)).Select(x=>x.ToView()).ToList();
+        // user media
+        WatchList = (await _userMediaService.GetSaved<UserMovie>(profileId)).Select(x=>x.ToView()).ToList();
+        AlreadyWatch = (await _userMediaService.GetHistory<UserMovie>(profileId)).Select(x=>x.ToView()).ToList();
+
+        // tmdb
         Trending = (await _tmdbService.GetTrendingMovies()).Select(MapToView).ToList();
         Upcoming = (await _tmdbService.GetUpcomingMovies()).Select(MapToView).ToList();
     }
@@ -51,7 +54,7 @@ public class MoviesModel: PageModel
                 Models.Enums.MediaType.Movie,
                 response.Title!,
                 response.PosterUrl,
-                null,null,null, null
+                null,null,false,false,null
             );
     }
 }

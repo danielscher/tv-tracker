@@ -27,7 +27,8 @@ public class UserSeason : UserMedia
             null,
             Season.ReleaseDate,
             Rating,
-            Status,
+            Watched,
+            Saved,
             WatchedAt
         );
     }

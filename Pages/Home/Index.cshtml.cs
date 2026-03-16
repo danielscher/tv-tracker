@@ -36,12 +36,12 @@ public class HomeModel: PageModel
         var profileId = CookieUtils.GetProfileId(Request);
         ProfileName = (await _profileService.FetchProfile(profileId)).Name;
         
-        RecentlyWatched = (await _userMediaService.GetWatchedMedia(profileId)).Select(x=>x.ToView()).ToList();
+        RecentlyWatched = (await _userMediaService.GetHistory<UserMedia>(profileId)).Select(x=>x.ToView()).ToList();
 
-        SeriesCount = await _userMediaService.GetTotalMediaCount<UserSeries>(profileId);
+        SeriesCount = await _userMediaService.GetTotalMediaWatchedCount<UserSeries>(profileId);
         SeriesWatchTime = _userMediaService.GetTotalSeriesWatchTime(profileId);
 
-        MoviesCount = await _userMediaService.GetTotalMediaCount<UserMovie>(profileId);
+        MoviesCount = await _userMediaService.GetTotalMediaWatchedCount<UserMovie>(profileId);
         MoviesWatchTime = _userMediaService.GetTotalMovieWatchTime(profileId);
     }
 }

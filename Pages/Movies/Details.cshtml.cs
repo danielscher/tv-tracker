@@ -47,7 +47,7 @@ public class DetailsModel: PageModel
             {
                 var posterUrl = x.PosterPath != null ? _tmdbService.PosterUrlBuilder(x.PosterPath) : null;
                 DateTime? releaseDate = x.ReleaseDate != null ? DateTime.Parse(x.ReleaseDate) : null;
-                return new MediaView(x.Id,MediaType.Movie,x.Title,posterUrl,releaseDate,null,null,null);
+                return new MediaView(x.Id,MediaType.Movie,x.Title,posterUrl,releaseDate,null,false,false,null);
                 
             }).ToList();  
         }
@@ -80,9 +80,9 @@ public class DetailsModel: PageModel
         var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
-        .UpdateWatchStatus<UserMovie>(profileId,UserMediaInfo.UserMediaId,WatchStatus.WantToWatch))
+        .MarkAsSaved(profileId,UserMediaInfo.UserMediaId))
         .Flatten();
-        return new JsonResult( new {status = UserMediaInfo.Status});
+        return new JsonResult( new {saved = UserMediaInfo.Saved});
     }
 
     public async Task<IActionResult> OnPostMarkAsWatched(int tmdbId)
@@ -90,7 +90,7 @@ public class DetailsModel: PageModel
         var profileId = CookieUtils.GetProfileId(Request);
         UserMediaInfo ??= await FetchOrCreateUserMedia(tmdbId,profileId);
         UserMediaInfo = (await _userMediaService
-        .UpdateWatchStatus<UserMovie>(profileId,UserMediaInfo.UserMediaId,WatchStatus.Watched))
+        .MarkAsWatched(profileId,UserMediaInfo.UserMediaId))
         .Flatten();
         return new JsonResult( new {watchedAt = UserMediaInfo.WatchDate?.ToString("dd/MM/yy")});
     }

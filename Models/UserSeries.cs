@@ -35,7 +35,8 @@ public class UserSeries : UserMedia
             Series.MediaInfo.PosterPath,
             Series.MediaInfo.ReleaseDate,
             Rating,
-            Status,
+            Watched,
+            Saved,
             WatchedAt
         );
     }

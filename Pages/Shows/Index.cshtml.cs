@@ -27,8 +27,12 @@ public class ShowsModel: PageModel
     public async Task OnGet()
     {
         var profileId = CookieUtils.GetProfileId(Request);
-        WatchList = (await _userMediaService.GetUserSeriesWatchList(profileId)).Select(x=>x.ToView()).ToList();
-        AlreadyWatch = (await _userMediaService.GetUserSeriesAlreadyWatchedList(profileId)).Select(x=>x.ToView()).ToList();
+
+        // UserMedia
+        WatchList = (await _userMediaService.GetSaved<UserSeries>(profileId)).Select(x=>x.ToView()).ToList();
+        AlreadyWatch = (await _userMediaService.GetHistory<UserSeries>(profileId)).Select(x=>x.ToView()).ToList();
+
+        // Tmdb
         Trending = (await _tmdbService.GetTrendingSeries()).Select(MapToView).ToList(); 
         Upcoming = (await _tmdbService.GetUpcomingEpisodes()).Select(MapToView).ToList();  
     }
@@ -46,7 +50,7 @@ public class ShowsModel: PageModel
                 Models.Enums.MediaType.Series,
                 response.Title!,
                 response.PosterUrl,
-                null,null,null, null
+                null,null,false, false, null
             );
     }
 }
